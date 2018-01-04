@@ -11,7 +11,7 @@ https://developers.liveperson.com/login-getting-started.html
 
 import requests
 from requests_oauthlib import OAuth1
-from lp_api_wrapper.domain.domain_service import DomainService
+from lp_api_wrapper import DomainService
 
 
 class LoginService(DomainService):

@@ -34,7 +34,7 @@ with an app_key, app_secret, access_token, and access_token_secret for an OAuth1
 
 import concurrent.futures
 import requests
-from lp_api_wrapper.login.login_service import LoginService
+from lp_api_wrapper import LoginService
 from typing import List
 
 
