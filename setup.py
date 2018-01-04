@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 
 setup(
@@ -8,12 +8,13 @@ setup(
     author='Anthony Jones',
     author_email='ajones@liveperson.com',
     url='https://github.com/ajoneslp/liveperson-api-python-wrapper',
-    packages=['lp_api_wrapper'],
+    packages=find_packages(),
     install_requires=['requests', 'requests_oauthlib'],
     classifiers=[
-      'Development Status :: 3 - Alpha',
-      'Intended Audience :: Developers',
-      'Programming Language :: Python :: 3.5',
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6'
     ],
     zip_safe=False
 )
