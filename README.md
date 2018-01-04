@@ -16,7 +16,7 @@ $ pip install requests requests_oauthlib
 
 ## Installation
 ```bash
-$ pip install git+https://github.com/ajoneslp/liveperson-api-python-wrapper
+$ pip install lp_api_wrapper
 ```
 
 ## Import lp_api_wrapper
