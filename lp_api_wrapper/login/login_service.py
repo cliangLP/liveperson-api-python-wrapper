@@ -78,7 +78,7 @@ class LoginService(DomainService):
         self.oauth = None
 
         r = requests.post(
-            url='https://{}/api/account/{}/login?v=1.3'.format(self.get_login_domain(), self.account_id),
+            url='https://{}/api/account/{}/login?v=1.3'.format(self.login_domain, self.account_id),
             json={
                 'username': username,
                 'password': password
@@ -104,7 +104,7 @@ class LoginService(DomainService):
         https://developers.liveperson.com/agent-refresh.html
         """
         r = requests.post(
-            url='https://{}/api/account/{}/refresh'.format(self.get_login_domain(), self.account_id),
+            url='https://{}/api/account/{}/refresh'.format(self.login_domain, self.account_id),
             json={
                 'csfr': self.csrf
             },
@@ -128,7 +128,7 @@ class LoginService(DomainService):
         https://developers.liveperson.com/agent-logout.html
         """
         r = requests.post(
-            url='https://{}/api/account/{}/logout'.format(self.get_login_domain(), self.account_id),
+            url='https://{}/api/account/{}/logout'.format(self.login_domain, self.account_id),
             json={
                 'csfr': self.csrf
             },
