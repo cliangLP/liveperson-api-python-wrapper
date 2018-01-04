@@ -19,6 +19,8 @@ from lp_api_wrapper import MessagingInteractions
 # For the Engagement History API
 from lp_api_wrapper import EngagementHistory
 
+# For Agent Metrics API
+
 ```
 
 ## Login/Authentication
@@ -39,18 +41,52 @@ conn = MessagingInteractions(account_id='123456789', oauth_info=oauth)
 ```
 
 ## Messaging Interactions API
+
+```python
+# Create MI Connection.
+mi_conn = MessagingInteractions(account_id='123456789', user_info=user_info)
+```
+
+#### 1. Conversations
+
 Get data using the Messaging Interaction's conversations method.
+
+Resources:
+https://developers.liveperson.com/data-messaging-interactions-conversations.html
 ```python
 body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
-mi_conn = MessagingInteractions(account_id='123456789', user_info=user_info)
 data = mi_conn.conversations(body)
 ```
 
-## Engagement History API
-Get data using the Engagement History's engagements method.
+#### 2. Get conversation by conversation id
+
+Resources:
+https://developers.liveperson.com/data-messaging-interactions-get-conversation-by-conversation-id.html
 ```python
-body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
-eh_conn = EngagementHistory(account_id='123456789', user_info=user_info)
-data = eh_conn.engagements(body)
+data = mi_conn.get_conversation_by_conversation_id(conversation_id='1234abc')
 ```
 
+#### 3. Get conversation by consumer id
+
+Resources:
+https://developers.liveperson.com/data-messaging-interactions-get-conversations-by-consumer-id.html
+```python
+data = mi_conn.get_conversations_by_consumer_id(consumer_id='1234abc')
+```
+
+
+## Engagement History API
+
+```python
+# Create EH Connection.
+mi_conn = EngagementHistory(account_id='123456789', user_info=user_info)
+```
+
+Get data using the Engagement History's engagements method.
+
+Resources:
+https://developers.liveperson.com/data-engagement-history-overview.html
+```python
+body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
+data = eh_conn.engagements(body)
+```

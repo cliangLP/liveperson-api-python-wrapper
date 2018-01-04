@@ -42,6 +42,8 @@ class AgentMetrics(LoginService):
 
     def agent_status(self, body):
         """
+        Returns the current state of logged in agents that are handling messaging conversations with all its
+        related data, including status, number of open conversations, load, skills etc.
 
         :param body:
         :return:
@@ -66,6 +68,8 @@ class AgentMetrics(LoginService):
 
     def summary(self, url_parameters: dict = None):
         """
+        Returns a summary on the current state of the contact center. This includes number of agents in the different
+        logged in statuses, weighted average of the agents’ load etc.
 
         :param url_parameters:
         :return:
