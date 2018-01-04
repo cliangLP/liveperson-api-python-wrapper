@@ -25,7 +25,7 @@ with an app_key, app_secret, access_token, and access_token_secret for an OAuth1
 
 # Data from single offset request
 >>> body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
->>> data = mi_conn.engagements(body)
+>>> data = mi_conn.conversations(body)
 
 
 :author: Anthony Jones
