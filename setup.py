@@ -8,6 +8,7 @@ setup(
     author='Anthony Jones',
     author_email='ajones@liveperson.com',
     url='https://github.com/ajoneslp/liveperson-api-python-wrapper',
+    download_url='https://github.com/ajoneslp/liveperson-api-python-wrapper/archive/0.1.tar.gz',
     packages=find_packages(),
     install_requires=['requests', 'requests_oauthlib'],
     classifiers=[
