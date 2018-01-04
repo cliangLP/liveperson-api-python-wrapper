@@ -14,6 +14,11 @@ The following APIs are supported:
 $ pip install requests requests_oauthlib
 ```
 
+## Installation
+```bash
+$ pip install git+git://github.com/ajoneslp/liveperson-api-python-wrapper
+```
+
 ## Import lp_api_wrapper
 ```python
 # For the Messaging Interactions API
