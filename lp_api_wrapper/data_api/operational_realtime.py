@@ -4,9 +4,23 @@ An unofficial native Python wrapper for the LivePerson Operational Realtime API.
 Reference:
 https://developers.liveperson.com/data-operational-realtime-overview.html
 
-The Messaging Operations API extracts data according to the search query. The API allows agent managers to extract
-information about their call center on the account, skill, and agent level. The data includes closed conversations
-and their associated attributes, such as customer satisfaction, average conversation length, resolved status and so on.
+The LiveEngage Operational Real-Time API provides real-time information about contact center performance.
+Using this API, Agent Managers can measure contact center performance at account level, at skill level, or even drill
+down to agent level. Data is provided for the previous 24 hours, up to the last 5 minutes, with a refresh rate of 10
+seconds.
+
+Agent Managers can also leverage the Operational Real-Time API to build new real-time dashboards, integrate with
+existing dashboards solutions, or even connect to workforce management systems (WFM). The Operational Real-Time API
+is based on the REST architecture style, which allows clients to send HTTP requests to view LiveEngage operational data.
+This API supports the HTTP GET functionality (data retrieval), and all data is returned in JSON format.
+
+It is possible to leverage the Operational Real-Time API to build your own real-time dashboards, integrate with existing
+dashboards solutions, or even connect to workforce management systems (WFM).
+
+Benefits:
+* Combine different data sources to a unified contact center dashboard.
+* Customize your manager and executive dashboards and alerts.
+* Monitor performance at account level, skill level or agent level.
 
 Usage Example:
 1. Import OperationalRealtime
