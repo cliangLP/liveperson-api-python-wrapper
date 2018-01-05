@@ -32,7 +32,6 @@ import requests
 from lp_api_wrapper.login.login_service import LoginService
 from typing import List, Optional
 
-
 __author__ = 'Anthony Jones'
 __email__ = 'ajones@liveperson.com'
 
