@@ -42,7 +42,7 @@ class MessagingOperations(LoginService):
         self.am_domain = self.get_domain(service_name='leDataReporting')
 
     def messaging_conversation(self, time_frame: int, version: int = 1, skill_ids: Optional[str] = None,
-                               agent_ids: Optional[str] = None, interval: Optional[int] = None):
+                               agent_ids: Optional[str] = None, interval: Optional[int] = None) -> dict:
         """
         Retrieves messaging conversation related metrics at the site, skill or agent level.
 
@@ -56,6 +56,9 @@ class MessagingOperations(LoginService):
         limited on the server side. As most requests are in milliseconds, the likelihood of your requests actually
         encountering an issue is rare but should that happen, you can expect to receive a 429 Status Code from the
         server.
+
+        Reference:
+        https://developers.liveperson.com/data-messaging-operations-messaging-conversation.html
 
         :param time_frame: The time range (in minutes) by which the data can be filtered. Where: end time is the current
          time and the start time = end time - timeframe. The maximum timeframe value is 1440 minutes (24 hours).
@@ -104,7 +107,7 @@ class MessagingOperations(LoginService):
             r.raise_for_status()
 
     def messaging_csat_distribution(self, time_frame: int, version: int = 1, skill_ids: Optional[str] = None,
-                                    agent_ids: Optional[str] = None):
+                                    agent_ids: Optional[str] = None) -> dict:
         """
         Retrieves messaging CSAT (Customer Satisfaction) distribution related metrics at the site, skill or agent level.
 
@@ -118,6 +121,9 @@ class MessagingOperations(LoginService):
         limited on the server side. As most requests are in milliseconds, the likelihood of your requests actually
         encountering an issue is rare but should that happen, you can expect to receive a 429 Status Code from the
         server.
+
+        Reference:
+        https://developers.liveperson.com/data-messaging-operations-messaging-csat-distribution.html
 
         :param time_frame: The time range (in minutes) by which the data can be filtered. Where: end time is the current
          time and the start time is the end time - timeframe. The maximum timeframe value is 1440 minutes (24 hours).
