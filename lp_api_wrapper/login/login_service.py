@@ -2,20 +2,21 @@
 The LoginService class allows other Python LiveEngage API Wrapper classes to login via the Login Service API or using
 OAuth1 authentication with app_key, app_secret, access_token, and access_token secret values.
 
-For more information and details, please reference the Login Service API:
+Reference:
 https://developers.liveperson.com/login-getting-started.html
-
-:author: Anthony Jones
-:email: ajones (at) liveperson (dot) com
 """
 
 import requests
 from requests_oauthlib import OAuth1
-from lp_api_wrapper import DomainService
+from lp_api_wrapper.domain.domain_service import DomainService
+from typing import Optional
+
+__author__ = 'Anthony Jones'
+__email__ = 'ajones@liveperson.com'
 
 
 class LoginService(DomainService):
-    def __init__(self, account_id, user_info: dict = None, oauth_info: dict = None):
+    def __init__(self, account_id: str, user_info: Optional[dict] = None, oauth_info: Optional[dict] = None) -> None:
         super().__init__(account_id=account_id)
         self.login_domain = self.get_domain(service_name='agentVep')
         self.bearer = None
@@ -41,11 +42,11 @@ class LoginService(DomainService):
         if user_info is None and oauth_info is None:
             raise ValueError('Please login with either user or oauth credentials.')
 
-    def oauth_login(self, app_key: str, app_secret: str, access_token: str, access_token_secret: str):
+    def oauth_login(self, app_key: str, app_secret: str, access_token: str, access_token_secret: str) -> None:
         """
         Allows OAuth1 authentication from the requests_oauthlib library.
 
-        For more information:
+        Reference:
         http://requests-oauthlib.readthedocs.io/en/latest/oauth1_workflow.html
 
         :param app_key:
@@ -65,11 +66,11 @@ class LoginService(DomainService):
             resource_owner_secret=access_token_secret
         )
 
-    def user_login(self, username: str, password: str):
+    def user_login(self, username: str, password: str) -> None:
         """
         Uses the LoginServiceAPI to generate a bearer token via LPA username and password credentials.
 
-        For more information and details, please reference:
+        Reference:
         https://developers.liveperson.com/agent-user-login.html
 
         :param username: LPA username
@@ -77,18 +78,17 @@ class LoginService(DomainService):
         """
         self.oauth = None
 
+        # User Login URL
+        url = 'https://{}/api/account/{}/login?v=1.3'
+
+        # Generate request
         r = requests.post(
-            url='https://{}/api/account/{}/login?v=1.3'.format(self.login_domain, self.account_id),
-            json={
-                'username': username,
-                'password': password
-            },
-            headers={
-                'content-type': 'application/json',
-                'accept': 'application/json'
-            }
+            url=url.format(self.login_domain, self.account_id),
+            json={'username': username, 'password': password},
+            headers={'content-type': 'application/json', 'accept': 'application/json'}
         )
 
+        # Check request status
         if r.status_code == requests.codes.ok:
             self.bearer = r.json()['bearer']
             self.csrf = r.json()['csrf']
@@ -96,59 +96,62 @@ class LoginService(DomainService):
             print('Error: {}'.format(r.json()))
             r.raise_for_status()
 
-    def refresh(self):
+    def refresh(self) -> None:
         """
         Refreshes bearer token that is issued from the Login Service API
 
-        For more information and details, please reference:
+        Reference:
         https://developers.liveperson.com/agent-refresh.html
         """
+
+        # Refresh URL
+        url = 'https://{}/api/account/{}/refresh'
+
+        # Generate request
         r = requests.post(
-            url='https://{}/api/account/{}/refresh'.format(self.login_domain, self.account_id),
-            json={
-                'csfr': self.csrf
-            },
-            headers={
-                'content-type': 'application/json',
-                'accept': 'application/json'
-            }
+            url=url.format(self.login_domain, self.account_id),
+            json={'csfr': self.csrf},
+            headers={'content-type': 'application/json', 'accept': 'application/json'}
         )
 
+        # Check request status
         if r.status_code == requests.codes.ok:
             print('Bearer token has been refreshed!')
         else:
             print('Error: {}'.format(r.json()))
             r.raise_for_status()
 
-    def logout(self):
+    def logout(self) -> None:
         """
         Logs out of current user session from the login service API.  Bearer token will be expired once logged out.
 
-        For more information and details, please reference:
+        Reference:
         https://developers.liveperson.com/agent-logout.html
         """
+
+        # Logout URL
+        url = 'https://{}/api/account/{}/logout'
+
+        # Generate request
         r = requests.post(
-            url='https://{}/api/account/{}/logout'.format(self.login_domain, self.account_id),
-            json={
-                'csfr': self.csrf
-            },
-            headers={
-                'content-type': 'application/json',
-                'accept': 'application/json'
-            }
+            url=url.format(self.login_domain, self.account_id),
+            json={'csfr': self.csrf},
+            headers={'content-type': 'application/json', 'accept': 'application/json'}
         )
 
+        # Check request status
         if r.status_code == requests.codes.ok:
             print('User has been logged out!')
         else:
             print('Error: {}'.format(r.json()))
             r.raise_for_status()
 
-    def authorize(self, headers: dict):
+    def authorize(self, headers: dict) -> dict:
         """
+        Method is used to authorize API requests.
 
         :param headers:
-        :return:
+        :return: dict of authorization parameters.
         """
         auth_args = {'headers': headers}
         if self.bearer:
