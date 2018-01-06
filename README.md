@@ -9,7 +9,7 @@ The following APIs are supported:
 * Operational Realtime API
 
 ## Requirements
-* Python 3.5+
+* Python 3.5, 3.6
 * requests
 * requests_oauthlib
 ```bash
