@@ -174,7 +174,7 @@ class MessagingInteractions(LoginService):
             print('Error: {}'.format(r.json()))
             r.raise_for_status()
 
-    def get_conversations_by_consumer_id(self, consumer_id: str, status: List[str] = None) -> dict:
+    def get_conversations_by_consumer_id(self, consumer_id: str, status: Optional[List[str]] = None) -> dict:
         """
         This method retrieves a list of conversations that the consumer participated in.
 

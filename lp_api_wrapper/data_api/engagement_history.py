@@ -82,7 +82,8 @@ class EngagementHistory(LoginService):
             print('Error: {}'.format(r.json()))
             r.raise_for_status()
 
-    def all_engagements(self, body, offset=0, limit=100, sort=None, max_concurrent_requests=5) -> List[dict]:
+    def all_engagements(self, body: dict, offset: int = 0, limit: int = 100, sort: Optional[str] = None,
+                        max_concurrent_requests: int = 5) -> List[dict]:
         """
         This method returns engagements with all their metadata and related transcripts, based on a given filter,
         for example, time range, skill/s, keywords, etc.
