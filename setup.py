@@ -3,13 +3,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='lp_api_wrapper',
-    version='0.1',
+    version='0.2',
     description='Unofficial LivePerson API Python Wrapper',
     author='Anthony Jones',
     author_email='ajones@liveperson.com',
     url='https://github.com/ajoneslp/liveperson-api-python-wrapper',
-    download_url='https://github.com/ajoneslp/liveperson-api-python-wrapper/archive/0.1.tar.gz',
-    packages=find_packages(),
+    download_url='https://github.com/ajoneslp/liveperson-api-python-wrapper/archive/0.2.tar.gz',
+    packages=find_packages(exclude=['examples']),
     install_requires=['requests', 'requests_oauthlib'],
     classifiers=[
         'Development Status :: 3 - Alpha',

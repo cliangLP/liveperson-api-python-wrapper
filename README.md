@@ -5,6 +5,8 @@ The following APIs are supported:
 * Messaging Interactions API
 * Engagement History API
 * Agent Metrics API
+* Messaging Operations API
+* Operational Realtime API
 
 ## Requirements
 * Python 3.5+
@@ -21,14 +23,20 @@ $ pip install lp_api_wrapper
 
 ## Import lp_api_wrapper
 ```python
-# For the Messaging Interactions API
+# For Messaging Interactions API
 from lp_api_wrapper import MessagingInteractions
 
-# For the Engagement History API
+# For Engagement History API
 from lp_api_wrapper import EngagementHistory
 
 # For Agent Metrics API
 from lp_api_wrapper import AgentMetrics
+
+# For Messaging Operations API
+from lp_api_wrapper import MessagingOperations
+
+# For Operational Realtime API
+from lp_api_wrapper import OperationalRealtime
 ```
 
 ## Login/Authentication
@@ -38,60 +46,84 @@ Using the Messaging Interactions API as an example, we can show login/authentica
 
 Login with LPA User Login
 ```python
+from lp_api_wrapper import MessagingInteractions
 user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
 conn = MessagingInteractions(account_id='123456789', user_info=user_info)
 ```
 
-Or, login using oauth1 authentication
+Or, login using OAuth1 authentication
 ```python
+from lp_api_wrapper import MessagingInteractions
 oauth = {'app_key': 'APPKEY', 'app_secret':'APPSECRET', 'access_token':'ATOKEN', 'access_token_secret':'ATSECRET'}
 conn = MessagingInteractions(account_id='123456789', oauth_info=oauth)
 ```
 
 ## Messaging Interactions API
-
+Create Messaging Interactions Connection
 ```python
-# Create MI Connection.
+from lp_api_wrapper import MessagingInteractions
+user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
 mi_conn = MessagingInteractions(account_id='123456789', user_info=user_info)
 ```
 
 #### 1. Conversations
-
-Get data using the Messaging Interaction's conversations method.
-
-Resources:
+Reference:
 https://developers.liveperson.com/data-messaging-interactions-conversations.html
+
+Arguments:
+
+* body: dict Note: Check reference for details.
+* offset: int (OPTIONAL) Defaults to 0
+* limit: int (OPTIONAL) Defaults to 100
+* sort: str (OPTIONAL)
+
 ```python
 body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
 data = mi_conn.conversations(body)
 ```
 
 #### 2. Get conversation by conversation id
-
-Resources:
+Reference:
 https://developers.liveperson.com/data-messaging-interactions-get-conversation-by-conversation-id.html
+
+Arguments:
+
+* conversation_id: str
+
 ```python
 data = mi_conn.get_conversation_by_conversation_id(conversation_id='1234abc')
 ```
 
 #### 3. Get conversation by consumer id
-
-Resources:
+Reference:
 https://developers.liveperson.com/data-messaging-interactions-get-conversations-by-consumer-id.html
+
+Arguments:
+
+* consumer_id: str
+
 ```python
 data = mi_conn.get_conversations_by_consumer_id(consumer_id='1234abc')
 ```
 
 ## Engagement History API
-
+Create Engagement History Connection.
 ```python
-# Create EH Connection.
+from lp_api_wrapper import EngagementHistory
+user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
 mi_conn = EngagementHistory(account_id='123456789', user_info=user_info)
 ```
 
-Get data using the Engagement History's engagements method.
+#### 1. Engagements
+Arguments:
 
-Resources:
+* body: dict (Note: Check reference for details.)
+* offset: int (OPTIONAL) Defaults to 0
+* limit: int (OPTIONAL) Defaults to 100
+* sort: str (OPTIONAL)
+
+
+Reference:
 https://developers.liveperson.com/data-engagement-history-overview.html
 ```python
 body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
@@ -99,27 +131,167 @@ data = eh_conn.engagements(body)
 ```
 
 ## Agent Metrics API
-
+Create Agent Metrics Connection.
 ```python
 # Create EH Connection.
+from lp_api_wrapper import AgentMetrics
+user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
 am_conn = AgentMetrics(account_id='123456789', user_info=user_info)
 ```
 
 #### 1. Agent Status
+Arguments:
 
-Resources:
+* status: List[str] (OPTIONAL)
+* agent_ids: List[str] (OPTIONAL)
+* skill_ids: List[str] (OPTIONAL)
+* agent_group_ids: List[str] (OPTIONAL)
+
+* If all are left blank, this method will return all agents' status for the account.
+
+Reference:
 https://developers.liveperson.com/data-messaging-interactions-methods-agent-status.html
 ```python
-# Example body
-body = {'skillIds': ['1234', '5678']}
-data = am_conn.engagements(body)
+# Example
+data = am_conn.agent_status(skill_ids=['1234', '5678'])
 ```
 
 
 #### 2. Summary
+Arguments:
 
-Resources:
+* status: List[str] (OPTIONAL)
+* agent_ids: List[str] (OPTIONAL)
+* skill_ids: List[str] (OPTIONAL)
+* agent_group_ids: List[str] (OPTIONAL)
+
+* If all are left blank, this method will return the status for the account.
+
+Reference:
 https://developers.liveperson.com/data-messaging-interactions-methods-summary.html
 ```python
 data = am_conn.summary()
+```
+
+
+## Messaging Operations API
+Create Messaging Operations Connection.
+```python
+from lp_api_wrapper import MessagingOperations
+user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
+mo_conn = MessagingOperations(account_id='123456789', user_info=user_info)
+```
+
+#### 1. Messaging Operations
+Arguments:
+
+* time_frame: int
+* version: int (OPTIONAL) Default is 1
+* skill_ids: str (OPTIONAL)
+* agent_ids: str (OPTIONAL)
+* interval: int (OPTIONAL)
+
+Reference:
+https://developers.liveperson.com/data-messaging-operations-messaging-conversation.html
+```python
+# Example
+data = mo_conn.messaging_operations(time_frame=1440)
+```
+
+#### 2. Messaging CSAT Distribution
+Arguments:
+
+* time_frame: int
+* version: int (OPTIONAL) Default is 1
+* skill_ids: str (OPTIONAL)
+* agent_ids: str (OPTIONAL)
+
+Reference:
+https://developers.liveperson.com/data-messaging-operations-messaging-csat-distribution.html
+```python
+# Example
+data = mo_conn.messaging_csat_distribution(time_frame=1440)
+```
+
+## Operational Realtime API
+Create Operational Realtime Connection.
+```python
+from lp_api_wrapper import OperationalRealtime
+user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
+or_conn = OperationalRealtime(account_id='123456789', user_info=user_info)
+```
+
+#### 1. Queue Health
+Arguments:
+
+* time_frame: int
+* version: int (OPTIONAL) Default is 1
+* skill_ids: str (OPTIONAL)
+* interval: int (OPTIONAL)
+
+Reference:
+https://developers.liveperson.com/data-operational-realtime-queue-health.html
+```python
+# Example
+data = or_conn.queue_health(time_frame=1440)
+```
+
+#### 2. Engagement Activity
+Arguments:
+
+* time_frame: int
+* version: int (OPTIONAL) Default is 1
+* skill_ids: str (OPTIONAL)
+* agent_ids: str (OPTIONAL)
+* interval: int (OPTIONAL)
+
+Reference:
+https://developers.liveperson.com/data-operational-realtime-engagement-activity.html
+```python
+# Example
+data = or_conn.engagement_activity(time_frame=1440)
+```
+
+#### 3. Agent Activity
+Arguments:
+
+* time_frame: int
+* version: int (OPTIONAL) Default is 1
+* agent_ids: str (OPTIONAL)
+* interval: int (OPTIONAL)
+
+Reference:
+https://developers.liveperson.com/data-operational-realtime-agent-activity.html
+```python
+# Example
+data = or_conn.agent_activity(time_frame=1440)
+```
+
+#### 4. Current Queue State
+Arguments:
+
+* version: int (OPTIONAL) Default is 1
+* skill_ids: str (OPTIONAL)
+
+Reference:
+https://developers.liveperson.com/data-operational-realtime-current-queue-state.html
+```python
+# Example
+data = or_conn.current_queue_state()
+```
+
+#### 5. SLA Histogram
+Arguments:
+
+* time_frame: int
+* version: int (OPTIONAL) Default is 1
+* skill_ids: str (OPTIONAL)
+* group_ids: str (OPTIONAL)
+* histogram: int (OPTIONAL)
+
+Reference:
+https://developers.liveperson.com/data-operational-realtime-sla-histogram.html
+```python
+# Example
+data = or_conn.sla_histogram(time_frame=1440)
 ```
