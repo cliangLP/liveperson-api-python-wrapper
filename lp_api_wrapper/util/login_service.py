@@ -34,19 +34,21 @@ class OAuthLogin:
 
 class LoginService(DomainService):
     def __init__(self, auth: Union[UserLogin, OAuthLogin]) -> None:
-        super().__init__(account_id=auth.account_id)
-        self.login_domain = self.get_domain(service_name='agentVep')
         self.bearer = None
         self.csrf = None
         self.oauth = None
 
-        if type(auth) == UserLogin:
-            self.user_login(username=auth.username, password=auth.password)
-        elif type(auth) == OAuthLogin:
-            self.oauth_login(app_key=auth.app_key, app_secret=auth.app_secret, access_token=auth.access_token,
-                             access_token_secret=auth.access_token_secret)
+        # Checks Authentication
+        if type(auth) in (UserLogin, OAuthLogin):
+            super().__init__(account_id=auth.account_id)
+            self.login_domain = self.get_domain(service_name='agentVep')
+            if type(auth) == UserLogin:
+                self.user_login(username=auth.username, password=auth.password)
+            if type(auth) == OAuthLogin:
+                self.oauth_login(app_key=auth.app_key, app_secret=auth.app_secret, access_token=auth.access_token,
+                                 access_token_secret=auth.access_token_secret)
         else:
-            raise ValueError('Accepts UserLogin or OAuthLogin for authentication. Import from lp_api_wrapper.')
+            raise TypeError('Accepts UserLogin or OAuthLogin for authentication. Import from lp_api_wrapper.')
 
     def oauth_login(self, app_key: str, app_secret: str, access_token: str, access_token_secret: str) -> None:
         """
