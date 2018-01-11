@@ -45,6 +45,8 @@ class LoginService(DomainService):
         elif type(auth) == OAuthLogin:
             self.oauth_login(app_key=auth.app_key, app_secret=auth.app_secret, access_token=auth.access_token,
                              access_token_secret=auth.access_token_secret)
+        else:
+            raise ValueError('Accepts UserLogin or OAuthLogin for authentication. Import from lp_api_wrapper.')
 
     def oauth_login(self, app_key: str, app_secret: str, access_token: str, access_token_secret: str) -> None:
         """
