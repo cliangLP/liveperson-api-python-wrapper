@@ -1,4 +1,8 @@
-# Unofficial LivePerson API Python Wrapper
+# lp_api_wrapper: Unofficial LivePerson API Python Wrapper
+[![PyPI version](https://badge.fury.io/py/lp_api_wrapper.svg)](https://badge.fury.io/py/lp_api_wrapper)
+
+![Python version](https://img.shields.io/badge/python-3.5%2C%203.6-green.svg)
+
 lp_api_wrapper is a native Python library to interface with LivePerson's APIs to gather data.
 
 The following APIs are supported:
@@ -8,8 +12,8 @@ The following APIs are supported:
 * Messaging Operations API
 * Operational Realtime API
 
-## Requirements
-* Python 3.5, 3.6
+
+## Dependencies
 * requests
 * requests_oauthlib
 ```bash
