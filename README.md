@@ -131,7 +131,6 @@ data = eh_conn.engagements(body)
 ## Agent Metrics API
 Create Agent Metrics Connection.
 ```python
-# Create EH Connection.
 from lp_api_wrapper import AgentMetrics
 am_conn = AgentMetrics(auth=auth)
 ```
@@ -149,7 +148,6 @@ Arguments:
 Reference:
 https://developers.liveperson.com/data-messaging-interactions-methods-agent-status.html
 ```python
-# Example
 data = am_conn.agent_status(skill_ids=['1234', '5678'])
 ```
 
@@ -190,7 +188,6 @@ Arguments:
 Reference:
 https://developers.liveperson.com/data-messaging-operations-messaging-conversation.html
 ```python
-# Example
 data = mo_conn.messaging_operations(time_frame=1440)
 ```
 
@@ -205,7 +202,6 @@ Arguments:
 Reference:
 https://developers.liveperson.com/data-messaging-operations-messaging-csat-distribution.html
 ```python
-# Example
 data = mo_conn.messaging_csat_distribution(time_frame=1440)
 ```
 
@@ -227,7 +223,6 @@ Arguments:
 Reference:
 https://developers.liveperson.com/data-operational-realtime-queue-health.html
 ```python
-# Example
 data = or_conn.queue_health(time_frame=1440)
 ```
 
@@ -243,7 +238,6 @@ Arguments:
 Reference:
 https://developers.liveperson.com/data-operational-realtime-engagement-activity.html
 ```python
-# Example
 data = or_conn.engagement_activity(time_frame=1440)
 ```
 
@@ -258,7 +252,6 @@ Arguments:
 Reference:
 https://developers.liveperson.com/data-operational-realtime-agent-activity.html
 ```python
-# Example
 data = or_conn.agent_activity(time_frame=1440)
 ```
 
@@ -271,7 +264,6 @@ Arguments:
 Reference:
 https://developers.liveperson.com/data-operational-realtime-current-queue-state.html
 ```python
-# Example
 data = or_conn.current_queue_state()
 ```
 
@@ -287,6 +279,5 @@ Arguments:
 Reference:
 https://developers.liveperson.com/data-operational-realtime-sla-histogram.html
 ```python
-# Example
 data = or_conn.sla_histogram(time_frame=1440)
 ```
