@@ -2,15 +2,15 @@
 This example shows how to create a Messaging Interactions transcripts CSV flat file from the lp_api_wrapper library.
 """
 
-from lp_api_wrapper import MessagingInteractions
+from lp_api_wrapper import MessagingInteractions, UserLogin
 from datetime import datetime, timedelta
 import pandas as pd
 
-# LPA Username & Password (Or use OAUTH1.  Check README.md for more info)
-user_info = {'username': 'YOURUSERNAME', 'password': 'YOURPASSWORD'}
+# For User Login
+auth = UserLogin(account_id='1234', username='YOURUSERNAME', password='YOURPASSWORD')
 
 # Create MI Connections
-mi_conn = MessagingInteractions(account_id='1234', user_info=user_info)
+mi_conn = MessagingInteractions(auth=auth)
 
 # Creates Epoch Time from 1 day ago. (If your volume is low, or none. Consider increasing days)
 start_from = int((datetime.now() - timedelta(days=1)).timestamp() * 1000)

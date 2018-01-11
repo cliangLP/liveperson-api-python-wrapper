@@ -18,7 +18,7 @@ $ pip install requests requests_oauthlib
 
 ## Installation
 ```bash
-$ pip install lp_api_wrapper
+$ pip install --upgrade lp_api_wrapper
 ```
 
 ## Import lp_api_wrapper
@@ -42,28 +42,23 @@ from lp_api_wrapper import OperationalRealtime
 ## Login/Authentication
 Each class in lp_api_wrapper accepts user login or oauth1 authentication.
 
-Using the Messaging Interactions API as an example, we can show login/authentication.
-
 Login with LPA User Login
 ```python
-from lp_api_wrapper import MessagingInteractions
-user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
-conn = MessagingInteractions(account_id='123456789', user_info=user_info)
+from lp_api_wrapper import UserLogin
+auth = UserLogin(account_id='1234', username='YOURUSERNAME', password='YOURPASSWORD')
 ```
 
 Or, login using OAuth1 authentication
 ```python
-from lp_api_wrapper import MessagingInteractions
-oauth = {'app_key': 'APPKEY', 'app_secret':'APPSECRET', 'access_token':'ATOKEN', 'access_token_secret':'ATSECRET'}
-conn = MessagingInteractions(account_id='123456789', oauth_info=oauth)
+from lp_api_wrapper import OAuthLogin
+auth = OAuthLogin(account_id='1234', app_key='APP_KEY', app_secret='APP_SECRET', access_token='ACCESS_TOKEN', access_token_secret='ACCESS_TOKEN_SECRET')
 ```
 
 ## Messaging Interactions API
 Create Messaging Interactions Connection
 ```python
 from lp_api_wrapper import MessagingInteractions
-user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
-mi_conn = MessagingInteractions(account_id='123456789', user_info=user_info)
+mi_conn = MessagingInteractions(auth=auth)
 ```
 
 #### 1. Conversations
@@ -110,8 +105,7 @@ data = mi_conn.get_conversations_by_consumer_id(consumer_id='1234abc')
 Create Engagement History Connection.
 ```python
 from lp_api_wrapper import EngagementHistory
-user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
-mi_conn = EngagementHistory(account_id='123456789', user_info=user_info)
+mi_conn = EngagementHistory(auth=auth)
 ```
 
 #### 1. Engagements
@@ -135,8 +129,7 @@ Create Agent Metrics Connection.
 ```python
 # Create EH Connection.
 from lp_api_wrapper import AgentMetrics
-user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
-am_conn = AgentMetrics(account_id='123456789', user_info=user_info)
+am_conn = AgentMetrics(auth=auth)
 ```
 
 #### 1. Agent Status
@@ -178,8 +171,7 @@ data = am_conn.summary()
 Create Messaging Operations Connection.
 ```python
 from lp_api_wrapper import MessagingOperations
-user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
-mo_conn = MessagingOperations(account_id='123456789', user_info=user_info)
+mo_conn = MessagingOperations(auth=auth)
 ```
 
 #### 1. Messaging Operations
@@ -217,8 +209,7 @@ data = mo_conn.messaging_csat_distribution(time_frame=1440)
 Create Operational Realtime Connection.
 ```python
 from lp_api_wrapper import OperationalRealtime
-user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
-or_conn = OperationalRealtime(account_id='123456789', user_info=user_info)
+or_conn = OperationalRealtime(auth=auth)
 ```
 
 #### 1. Queue Health

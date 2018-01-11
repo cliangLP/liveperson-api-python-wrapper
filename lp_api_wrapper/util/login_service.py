@@ -8,39 +8,43 @@ https://developers.liveperson.com/login-getting-started.html
 
 import requests
 from requests_oauthlib import OAuth1
-from lp_api_wrapper.domain.domain_service import DomainService
-from typing import Optional
+from lp_api_wrapper.util.domain_service import DomainService
+from typing import Union
 
 __author__ = 'Anthony Jones'
 __email__ = 'ajones@liveperson.com'
 
 
+class UserLogin:
+    def __init__(self, account_id: str, username: str, password: str) -> None:
+        self.account_id = account_id
+        self.username = username
+        self.password = password
+
+
+class OAuthLogin:
+    def __init__(self, account_id: str, app_key: str, app_secret: str, access_token: str,
+                 access_token_secret: str) -> None:
+        self.account_id = account_id
+        self.app_key = app_key
+        self.app_secret = app_secret
+        self.access_token = access_token
+        self.access_token_secret = access_token_secret
+
+
 class LoginService(DomainService):
-    def __init__(self, account_id: str, user_info: Optional[dict] = None, oauth_info: Optional[dict] = None) -> None:
-        super().__init__(account_id=account_id)
+    def __init__(self, auth: Union[UserLogin, OAuthLogin]) -> None:
+        super().__init__(account_id=auth.account_id)
         self.login_domain = self.get_domain(service_name='agentVep')
         self.bearer = None
         self.csrf = None
         self.oauth = None
 
-        if user_info:
-            try:
-                self.user_login(user_info['username'], user_info['password'])
-                self.user_info = user_info
-            except KeyError:
-                print("For user login, try: {'username': 'YOUR_USERNAME', 'password': 'YOUR_PASSWORD'}")
-
-        if oauth_info:
-            try:
-                self.oauth_login(oauth_info['app_key'], oauth_info['app_secret'], oauth_info['access_token'],
-                                 oauth_info['access_token_secret'])
-                self.oauth_info = oauth_info
-            except KeyError:
-                print("For user login, try: {'app_key': 'APPKEY', 'app_secret': 'APPSECRET', 'access_token': "
-                      "'ACCESSTOKEN', 'access_token_secret': 'ACCESSTOKENSECRET'}")
-
-        if user_info is None and oauth_info is None:
-            raise ValueError('Please login with either user or oauth credentials.')
+        if type(auth) == UserLogin:
+            self.user_login(username=auth.username, password=auth.password)
+        elif type(auth) == OAuthLogin:
+            self.oauth_login(app_key=auth.app_key, app_secret=auth.app_secret, access_token=auth.access_token,
+                             access_token_secret=auth.access_token_secret)
 
     def oauth_login(self, app_key: str, app_secret: str, access_token: str, access_token_secret: str) -> None:
         """

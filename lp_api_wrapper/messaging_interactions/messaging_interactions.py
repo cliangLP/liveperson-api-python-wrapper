@@ -12,38 +12,36 @@ The API returns the conversation’s transcripts and all of its related metadata
 summary, participated agents, the reason the conversation was closed etc.
 
 Usage Example:
-1. Import MessagingInteractions
+1. Choose User Service Login or OAuth1 Authentication.
+
+    # For User Service Login
+    > from lp_api_wrapper import UserLogin
+    > auth = UserLogin(account_id='1234', username='YOURUSERNAME', password='YOURPASSWORD')
+
+    # For OAuth1 Authentication
+    > from lp_api_wrapper import OAuthLogin
+    > auth = OAuthLogin(account_id='1234', app_key='K', app_secret='S', access_token='T', access_token_secret='TS')
+
+2. Import MessagingInteractions and get data from connection
 
     > from lp_api_wrapper import MessagingInteractions
-
-2. Choose User Service Login or OAuth1 Authentication.
-
-    # For User Authentication
-    > user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
-    > mi_conn = MessagingInteractions(account_id='123456789', user_info=user_info)
-
-    # For Oauth Authentication
-    > oauth = {'app_key': 'APPKEY', 'app_secret':'APPSECRET', 'access_token':'ATOKEN', 'access_token_secret':'ATSECRET'}
-    > mi_conn = MessagingInteractions(account_id='123456789', oauth_info=oauth)
-
-3. Get data from connection
-
+    > mi_conn = MessagingInteractions(auth=auth)
     > body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
     > data = mi_conn.conversations(body)
 """
 
 import concurrent.futures
 import requests
-from lp_api_wrapper.login.login_service import LoginService
-from typing import List, Optional
+from lp_api_wrapper.util.login_service import LoginService, UserLogin, OAuthLogin
+from typing import List, Optional, Union
 
 __author__ = 'Anthony Jones'
 __email__ = 'ajones@liveperson.com'
 
 
 class MessagingInteractions(LoginService):
-    def __init__(self, account_id: str, user_info: Optional[dict] = None, oauth_info: Optional[dict] = None) -> None:
-        super().__init__(account_id=account_id, user_info=user_info, oauth_info=oauth_info)
+    def __init__(self, auth: Union[UserLogin, OAuthLogin]) -> None:
+        super().__init__(auth=auth)
         self.mi_domain = self.get_domain(service_name='msgHist')
 
     def conversations(self, body: dict, offset: int = 0, limit: int = 100, sort: Optional[str] = None) -> dict:

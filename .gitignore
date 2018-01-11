@@ -4,3 +4,4 @@ __pycache__
 .pypirc
 lp_api_wrapper.egg-info/
 dist/
+tests/

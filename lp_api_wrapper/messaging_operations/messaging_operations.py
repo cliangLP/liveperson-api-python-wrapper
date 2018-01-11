@@ -9,36 +9,34 @@ information about their call center on the account, skill, and agent level. The 
 and their associated attributes, such as customer satisfaction, average conversation length, resolved status and so on.
 
 Usage Example:
-1. Import MessagingOperations
-
-    > from lp_api_wrapper import MessagingOperations
-
-2. Choose User Service Login or OAuth1 Authentication.
+1. Choose User Service Login or OAuth1 Authentication.
 
     # For User Service Login
-    > user_info = {'username': 'LPA-USERNAME', 'password': 'LPA-PASSWORD'}
-    > mo_conn = MessagingOperations(account_id='123456789', user_info=user_info)
+    > from lp_api_wrapper import UserLogin
+    > auth = UserLogin(account_id='1234', username='YOURUSERNAME', password='YOURPASSWORD')
 
     # For OAuth1 Authentication
-    > oauth = {'app_key': 'APPKEY', 'app_secret':'APPSECRET', 'access_token':'ATOKEN', 'access_token_secret':'ATSECRET'}
-    > mo_conn = MessagingOperations(account_id='123456789', oauth_info=oauth)
+    > from lp_api_wrapper import OAuthLogin
+    > auth = OAuthLogin(account_id='1234', app_key='K', app_secret='S', access_token='T', access_token_secret='TS')
 
-3. Get data from connection
+2.  Import MessagingOperations and get data from connection
 
+    > from lp_api_wrapper import MessagingOperations
+    > mo_conn = MessagingOperations(auth=auth)
     > data = mo_conn.messaging_conversation(time_frame=1440, skill_ids='1,2' agent_ids='3,4', interval=1440)
 """
 
 import requests
-from lp_api_wrapper.login.login_service import LoginService
-from typing import Optional
+from lp_api_wrapper.util.login_service import LoginService, UserLogin, OAuthLogin
+from typing import List, Optional, Union
 
 __author__ = 'Anthony Jones'
 __email__ = 'ajones@liveperson.com'
 
 
 class MessagingOperations(LoginService):
-    def __init__(self, account_id: str, user_info: Optional[dict] = None, oauth_info: Optional[dict] = None) -> None:
-        super().__init__(account_id=account_id, user_info=user_info, oauth_info=oauth_info)
+    def __init__(self, auth: Union[UserLogin, OAuthLogin]) -> None:
+        super().__init__(auth=auth)
         self.am_domain = self.get_domain(service_name='leDataReporting')
 
     def messaging_conversation(self, time_frame: int, version: int = 1, skill_ids: Optional[str] = None,
