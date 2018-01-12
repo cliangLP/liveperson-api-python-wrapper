@@ -245,8 +245,8 @@ data = or_conn.engagement_activity(time_frame=1440)
 Arguments:
 
 * time_frame: int
+* agent_ids: str
 * version: int (OPTIONAL) Default is 1
-* agent_ids: str (OPTIONAL)
 * interval: int (OPTIONAL)
 
 Reference:
