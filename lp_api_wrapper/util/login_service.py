@@ -2,7 +2,7 @@
 The LoginService class allows other Python LiveEngage API Wrapper classes to login via the Login Service API or using
 OAuth1 authentication with app_key, app_secret, access_token, and access_token secret values.
 
-Reference:
+Documentation:
 https://developers.liveperson.com/login-getting-started.html
 """
 
@@ -37,6 +37,7 @@ class LoginService(DomainService):
         self.bearer = None
         self.csrf = None
         self.oauth = None
+        self.auth = auth
 
         # Checks Authentication
         if type(auth) in (UserLogin, OAuthLogin):
@@ -53,9 +54,6 @@ class LoginService(DomainService):
     def oauth_login(self, app_key: str, app_secret: str, access_token: str, access_token_secret: str) -> None:
         """
         Allows OAuth1 authentication from the requests_oauthlib library.
-
-        Reference:
-        http://requests-oauthlib.readthedocs.io/en/latest/oauth1_workflow.html
 
         :param app_key:
         :param app_secret:
@@ -76,10 +74,10 @@ class LoginService(DomainService):
 
     def user_login(self, username: str, password: str) -> None:
         """
-        Uses the LoginServiceAPI to generate a bearer token via LPA username and password credentials.
-
-        Reference:
+        Documentation:
         https://developers.liveperson.com/agent-user-login.html
+
+        Uses the LoginServiceAPI to generate a bearer token via LPA username and password credentials.
 
         :param username: LPA username
         :param password: LPA password
@@ -106,10 +104,10 @@ class LoginService(DomainService):
 
     def refresh(self) -> None:
         """
-        Refreshes bearer token that is issued from the Login Service API
-
-        Reference:
+        Documentation:
         https://developers.liveperson.com/agent-refresh.html
+
+        Refreshes bearer token that is issued from the Login Service API
         """
 
         # Refresh URL
@@ -131,10 +129,10 @@ class LoginService(DomainService):
 
     def logout(self) -> None:
         """
-        Logs out of current user session from the login service API.  Bearer token will be expired once logged out.
-
-        Reference:
+        Documentation:
         https://developers.liveperson.com/agent-logout.html
+
+        Logs out of current user session from the login service API.  Bearer token will be expired once logged out.
         """
 
         # Logout URL
