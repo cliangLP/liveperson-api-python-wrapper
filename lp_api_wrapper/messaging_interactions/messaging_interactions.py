@@ -1,7 +1,7 @@
 """
 An unofficial native Python wrapper for the LivePerson Messaging Interactions API
 
-Reference:
+Documentation:
 https://developers.liveperson.com/data-messaging-interactions-overview.html
 
 The LiveEngage Messaging Interactions API retrieves the most up to date information available about contact center
@@ -46,13 +46,14 @@ class MessagingInteractions(LoginService):
 
     def conversations(self, body: dict, offset: int = 0, limit: int = 100, sort: Optional[str] = None) -> dict:
         """
+        Documentation:
+        https://developers.liveperson.com/data_api-messaging-interactions-conversations.html
+
         This method retrieves conversations with all their metadata and related messages based on a predefined search
         criteria. Search criteria includes filtering by time range, agent, skill, etc.
 
-        * RETURNS 1 OFFSET OF DATA.  For the complete data set of the date range, use the method 'all_conversations'.
-
-        Reference:
-        https://developers.liveperson.com/data_api-messaging-interactions-conversations.html
+        Note:
+        WILL RETURN 1 OFFSET OF DATA.  For the complete data set of the date range, use the method 'all_conversations'.
 
         :param body: REQUIRED Enter body parameters that are the same as the API documentation.
         :param offset: Specifies from which record to retrieve the chat. Default is 0.
@@ -85,13 +86,14 @@ class MessagingInteractions(LoginService):
     def all_conversations(self, body: dict, offset: int = 0, limit: int = 100, sort: Optional[str] = None,
                           max_concurrent_requests: int = 5) -> List[dict]:
         """
+        Documentation:
+        https://developers.liveperson.com/data_api-messaging-interactions-conversations.html
+
         This method retrieves a list of conversations with all their metadata and related messages based on a
         predefined search criteria. Search criteria includes filtering by time range, agent, skill, etc.
 
-        * RETURNS ALL OFFSETS OF DATA.  Please use the method 'conversations' for testing.
-
-        Reference:
-        https://developers.liveperson.com/data_api-messaging-interactions-conversations.html
+        Note:
+        WILL RETURN ALL OFFSETS OF DATA.  Please use the method 'conversations' for testing.
 
         :param body: Enter body parameters that are the same as the API documentation.
         :param offset: Specifies from which record to retrieve the chat. Default is 0.
@@ -120,7 +122,7 @@ class MessagingInteractions(LoginService):
                         api_data = self.conversations(body=b, offset=o, limit=l, sort=s)['conversationHistoryRecords']
                     except requests.HTTPError:
                         print('Reconnecting... [Attempt {}, Offset {}]'.format(attempt, o))
-                        self.user_login(self.user_info['username'], self.user_info['password'])
+                        self.user_login(username=self.auth.username, password=self.auth.password)
                         print('Woot! We have connection!')
                         continue
                     break
@@ -144,10 +146,10 @@ class MessagingInteractions(LoginService):
 
     def get_conversation_by_conversation_id(self, conversation_id: str) -> dict:
         """
-        This method retrieves a conversation according to the given conversation ID.
-
-        Reference:
+        Documentation:
         https://developers.liveperson.com/data_api-messaging-interactions-get-conversation-by-conversation-id.html
+
+        This method retrieves a conversation according to the given conversation ID.
 
         :param conversation_id: ID of the conversation to search.
         :return: Dictionary with same structure as the JSON data from the API.
@@ -174,10 +176,10 @@ class MessagingInteractions(LoginService):
 
     def get_conversations_by_consumer_id(self, consumer_id: str, status: Optional[List[str]] = None) -> dict:
         """
-        This method retrieves a list of conversations that the consumer participated in.
-
-        Reference:
+        Documentation:
         https://developers.liveperson.com/data_api-messaging-interactions-get-conversations-by-consumer-id.html
+
+        This method retrieves a list of conversations that the consumer participated in.
 
         :param consumer_id: ID of the consumer to search.
         :param status: Latest status of the conversation. Valid values: OPEN, CLOSE
