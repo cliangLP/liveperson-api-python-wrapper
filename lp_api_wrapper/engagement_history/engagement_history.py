@@ -1,14 +1,13 @@
 """
 An unofficial native Python wrapper for the LivePerson Engagement History API
 
-Reference:
+Documentation:
 https://developers.liveperson.com/data-engagement-history-methods.html
 
 Brands can now search, filter and keep copies of chat transcripts and related data, for example surveys, to later
 integrate and further analyze their data with third-party tools (DWH, CRM systems, etc.). 99.5 % of chat transcript data
 is available within 5 minutes. All other chat transcript data (including metadata like Engagement Attributes) is
-available for up to 2 hours after a chat has ended, and is stored for 13 months. The Engagement History API is based
-on the REST architecture style.
+available for up to 2 hours after a chat has ended, and is stored for 13 months.
 
 Usage Example:
 1. Choose User Service Login or OAuth1 Authentication.
@@ -45,13 +44,14 @@ class EngagementHistory(LoginService):
 
     def engagements(self, body: dict, offset: int = 0, limit: int = 100, sort: Optional[str] = None) -> dict:
         """
+        Documentation:
+        https://developers.liveperson.com/data_api-engagement-history-methods.html
+
+        Note:
+        WILL RETURN 1 OFFSET OF DATA.  For the complete data set of the date range, use the method 'all_engagements'.
+
         This method returns engagements with all their metadata and related transcripts, based on a given filter,
         for example, time range, skill/s, keywords, etc.
-
-        * RETURNS 1 OFFSET OF DATA.  For the complete data set of the date range, use the method 'all_engagements'.
-
-        Reference:
-        https://developers.liveperson.com/data_api-engagement-history-methods.html
 
         :param body: REQUIRED Enter body parameters that are the same as the API documentation.
         :param offset: Specifies from which record to retrieve the chat. Default is 0.
@@ -83,13 +83,14 @@ class EngagementHistory(LoginService):
     def all_engagements(self, body: dict, offset: int = 0, limit: int = 100, sort: Optional[str] = None,
                         max_concurrent_requests: int = 5) -> List[dict]:
         """
+        Documentation:
+        https://developers.liveperson.com/data_api-messaging-interactions-conversations.html
+
+        Note:
+        WILL RETURN ALL OFFSETS OF DATA.  Please use the method 'conversations' for testing.
+
         This method returns engagements with all their metadata and related transcripts, based on a given filter,
         for example, time range, skill/s, keywords, etc.
-
-        * RETURNS ALL OFFSETS OF DATA.  Please use the method 'conversations' for testing.
-
-        Reference:
-        https://developers.liveperson.com/data_api-messaging-interactions-conversations.html
 
         :param offset: Specifies from which record to retrieve the chat. Default is 0.
         :param limit: Max amount of conversations to be received in the response.  Default and max is 100.
@@ -118,7 +119,7 @@ class EngagementHistory(LoginService):
                         api_data = self.engagements(body=b, offset=o, limit=l, sort=s)['interactionHistoryRecords']
                     except requests.HTTPError:
                         print('Reconnecting... [Attempt {}, Offset {}]'.format(attempt, o))
-                        self.user_login(self.user_info['username'], self.user_info['password'])
+                        self.user_login(username=self.auth.username, password=self.auth.password)
                         print('Woot! We have connection!')
                         continue
                     break
