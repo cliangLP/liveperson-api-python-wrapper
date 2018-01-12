@@ -1,7 +1,7 @@
 """
 An unofficial native Python wrapper for the LivePerson Messaging Operations API.
 
-Reference:
+Documentation:
 https://developers.liveperson.com/data-messaging-operations-overview.html
 
 The Messaging Operations API extracts data according to the search query. The API allows agent managers to extract
@@ -42,21 +42,10 @@ class MessagingOperations(LoginService):
     def messaging_conversation(self, time_frame: int, version: int = 1, skill_ids: Optional[str] = None,
                                agent_ids: Optional[str] = None, interval: Optional[int] = None) -> dict:
         """
-        Retrieves messaging conversation related metrics at the site, skill or agent level.
-
-        Messaging Conversation is calculated using bucket aggregation techniques where events are collected into 5
-        minute buckets, therefore the API might include events which were not in the requested time frame.
-
-        Example: If the time is now 13:29 and time frame is 7 minutes the API will use 2 buckets: 13:25 and 13:30.
-        In other words in practice the time of the data is not 13:22-13:29 but 13:20-13:29.
-
-        Note: this method is subject to Rate Limiting. This means that the maximum number of concurrent requests is
-        limited on the server side. As most requests are in milliseconds, the likelihood of your requests actually
-        encountering an issue is rare but should that happen, you can expect to receive a 429 Status Code from the
-        server.
-
-        Reference:
+        Documentation:
         https://developers.liveperson.com/data-messaging-operations-messaging-conversation.html
+
+        Retrieves messaging conversation related metrics at the site, skill or agent level.
 
         :param time_frame: The time range (in minutes) by which the data can be filtered. Where: end time is the current
          time and the start time = end time - timeframe. The maximum timeframe value is 1440 minutes (24 hours).
@@ -107,21 +96,10 @@ class MessagingOperations(LoginService):
     def messaging_csat_distribution(self, time_frame: int, version: int = 1, skill_ids: Optional[str] = None,
                                     agent_ids: Optional[str] = None) -> dict:
         """
-        Retrieves messaging CSAT (Customer Satisfaction) distribution related metrics at the site, skill or agent level.
-
-        Messaging CSAT Distribution is calculated using bucket aggregation techniques where events are collected into
-        5 minute buckets, therefore the API might include events which were not in the requested time frame.
-
-        Example: If the time is now 13:29 and time frame is 7 minutes the API will use 2 buckets: 13:25 and 13:30.
-        In other words in practice the time of the data is not 13:22-13:29 but 13:20-13:29.
-
-        Note: this method is subject to Rate Limiting. This means that the maximum number of concurrent requests is
-        limited on the server side. As most requests are in milliseconds, the likelihood of your requests actually
-        encountering an issue is rare but should that happen, you can expect to receive a 429 Status Code from the
-        server.
-
-        Reference:
+        Documentation:
         https://developers.liveperson.com/data-messaging-operations-messaging-csat-distribution.html
+
+        Retrieves messaging CSAT (Customer Satisfaction) distribution related metrics at the site, skill or agent level.
 
         :param time_frame: The time range (in minutes) by which the data can be filtered. Where: end time is the current
          time and the start time is the end time - timeframe. The maximum timeframe value is 1440 minutes (24 hours).
@@ -149,9 +127,9 @@ class MessagingOperations(LoginService):
         url = 'https://{}/operations/api/account/{}/msgcsatdistribution'
 
         # Generate request
-        r = requests.post(
+        r = requests.get(
             url=url.format(self.am_domain, self.account_id),
-            json={'timeframe': time_frame, 'v': version, 'skillIds': skill_ids, 'agentIds': agent_ids},
+            params={'timeframe': time_frame, 'v': version, 'skillIds': skill_ids, 'agentIds': agent_ids},
             **auth_args
         )
 
