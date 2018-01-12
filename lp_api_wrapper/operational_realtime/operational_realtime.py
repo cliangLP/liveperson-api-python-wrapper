@@ -1,26 +1,13 @@
 """
 An unofficial native Python wrapper for the LivePerson Operational Realtime API.
 
-Reference:
+Documentation:
 https://developers.liveperson.com/data-operational-realtime-overview.html
 
 The LiveEngage Operational Real-Time API provides real-time information about contact center performance.
 Using this API, Agent Managers can measure contact center performance at account level, at skill level, or even drill
 down to agent level. Data is provided for the previous 24 hours, up to the last 5 minutes, with a refresh rate of 10
 seconds.
-
-Agent Managers can also leverage the Operational Real-Time API to build new real-time dashboards, integrate with
-existing dashboards solutions, or even connect to workforce management systems (WFM). The Operational Real-Time API
-is based on the REST architecture style, which allows clients to send HTTP requests to view LiveEngage operational data.
-This API supports the HTTP GET functionality (data retrieval), and all data is returned in JSON format.
-
-It is possible to leverage the Operational Real-Time API to build your own real-time dashboards, integrate with existing
-dashboards solutions, or even connect to workforce management systems (WFM).
-
-Benefits:
-* Combine different data sources to a unified contact center dashboard.
-* Customize your manager and executive dashboards and alerts.
-* Monitor performance at account level, skill level or agent level.
 
 Usage Example:
 1. Choose User Service Login or OAuth1 Authentication.
@@ -42,7 +29,7 @@ Usage Example:
 
 import requests
 from lp_api_wrapper.util.login_service import LoginService, UserLogin, OAuthLogin
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 __author__ = 'Anthony Jones'
 __email__ = 'ajones@liveperson.com'
@@ -56,21 +43,10 @@ class OperationalRealtime(LoginService):
     def queue_health(self, time_frame: int, version: int = 1, skill_ids: Optional[str] = None,
                      interval: Optional[int] = None) -> dict:
         """
-        Retrieves queue-related metrics at the account or skill level.
-
-        Note: Queue Health is calculated using bucket-based aggregation techniques, where events are collected into
-        5 minute buckets. For this reason, events may be included that took place outside of the requested time frame.
-
-        Example: If the time now is 13:29 and the time frame is 7 minutes, the API will use 2 buckets: 13:25 and 13:30.
-        In other words, in practice the time of the data is not 13:22-13:29, but 13:20-13:29.
-
-        Note: this method is subject to Rate Limiting. This means that the maximum number of concurrent requests is
-        limited on the server side. As most requests are in milliseconds, the likelihood of your requests actually
-        encountering an issue is rare but should that happen, you can expect to receive a 429 Status Code from the
-        server.
-
-        Reference:
+        Documentation:
         https://developers.liveperson.com/data-operational-realtime-queue-health.html
+
+        Retrieves queue-related metrics at the account or skill level.
 
         :param time_frame: The time range (in minutes) by which the data can be filtered. Where: end time is the current
          time and the start time = end time - timeframe. The maximum timeframe value is 1440 minutes (24 hours).
@@ -96,9 +72,9 @@ class OperationalRealtime(LoginService):
         url = 'https://{}/operations/api/account/{}/queuehealth'
 
         # Generate request
-        r = requests.post(
+        r = requests.get(
             url=url.format(self.am_domain, self.account_id),
-            json={'timeframe': time_frame, 'v': version, 'skillIds': skill_ids, 'interval': interval},
+            params={'timeframe': time_frame, 'v': version, 'skillIds': skill_ids, 'interval': interval},
             **auth_args
         )
 
@@ -112,22 +88,10 @@ class OperationalRealtime(LoginService):
     def engagement_activity(self, time_frame: int, version: int = 1, skill_ids: Optional[str] = None,
                             agent_ids: Optional[str] = None, interval: Optional[int] = None) -> dict:
         """
-        Retrieves engagement activity-related metrics at the account, skill, or agent level.
-
-        Note: Engagement Activity is calculated using bucket-based aggregation techniques, where events are collected
-        into 5 minute buckets. For this reason, events may be included that took place outside of the requested time
-        frame.
-
-        Example: If the time now is 13:29 and time frame is 7 minutes, the API will use 2 buckets: 13:25 and 13:30.
-        In other words, in practice the time of the data is not 13:22-13:29, but 13:20-13:29.
-
-        Note: this method is subject to Rate Limiting. This means that the maximum number of concurrent requests is
-        limited on the server side. As most requests are in milliseconds, the likelihood of your requests actually
-        encountering an issue is rare but should that happen, you can expect to receive a 429 Status Code from the
-        server.
-
-        Reference:
+        Documentation:
         https://developers.liveperson.com/data-operational-realtime-engagement-activity.html
+
+        Retrieves engagement activity-related metrics at the account, skill, or agent level.
 
         :param time_frame: The time range (in minutes) in which the data can be filtered.
          Where end time = current time, and start time = end time - timeframe. The maximum timeframe value is
@@ -163,10 +127,10 @@ class OperationalRealtime(LoginService):
         url = 'https://{}/operations/api/account/{}/engactivity'
 
         # Generate request
-        r = requests.post(
+        r = requests.get(
             url=url.format(self.am_domain, self.account_id),
-            json={'timeframe': time_frame, 'v': version, 'agentIds': agent_ids, 'skillIds': skill_ids,
-                  'interval': interval},
+            params={'timeframe': time_frame, 'v': version, 'agentIds': agent_ids, 'skillIds': skill_ids,
+                    'interval': interval},
             **auth_args
         )
 
@@ -177,9 +141,11 @@ class OperationalRealtime(LoginService):
             print('Error: {}'.format(r.json()))
             r.raise_for_status()
 
-    def agent_activity(self, time_frame: int, version: int = 1, agent_ids: Optional[str] = None,
-                       interval: Optional[int] = None) -> dict:
+    def agent_activity(self, time_frame: int, agent_ids: str, version: int = 1, interval: Optional[int] = None) -> dict:
         """
+        Documentation:
+        https://developers.liveperson.com/data-operational-realtime-agent-activity.html
+
         Retrieves Agent State Distribution data, which includes the following states:
 
         * Logged in (total of all states)
@@ -192,14 +158,6 @@ class OperationalRealtime(LoginService):
         * Time spent chatting
         * Time spent not chatting
         * Time spent logged in and chatting concurrently with the maximum allowed chats
-
-        Note: this method is subject to Rate Limiting. This means that the maximum number of concurrent requests is
-        limited on the server side. As most requests are in milliseconds, the likelihood of your requests actually
-        encountering an issue is rare but should that happen, you can expect to receive a 429 Status Code from the
-        server.
-
-        Reference:
-        https://developers.liveperson.com/data-operational-realtime-agent-activity.html
 
         :param time_frame: The time range (in minutes) in which the data can be filtered. Where end time = current time,
          and start time = end time - timeframe.
@@ -240,18 +198,13 @@ class OperationalRealtime(LoginService):
 
     def current_queue_state(self, version: int = 1, skill_ids: Optional[str] = None) -> dict:
         """
+        Documentation:
+        https://developers.liveperson.com/data-operational-realtime-current-queue-state.html
+
         Retrieves the current queue state related metrics at the skill level:
 
         * Current queue size
         * Current available slots
-
-        Note: this method is subject to Rate Limiting. This means that the maximum number of concurrent requests is
-        limited on the server side. As most requests are in milliseconds, the likelihood of your requests actually
-        encountering an issue is rare but should that happen, you can expect to receive a 429 Status Code from the
-        server.
-
-        Reference:
-        https://developers.liveperson.com/data-operational-realtime-current-queue-state.html
 
         :param version: Version of API, for example, v=1.
         :param skill_ids: When provided, metrics on the response will be grouped by the requested skills.
@@ -269,9 +222,9 @@ class OperationalRealtime(LoginService):
         url = 'https://{}/operations/api/account/{}/queuestate'
 
         # Generate request
-        r = requests.post(
+        r = requests.get(
             url=url.format(self.am_domain, self.account_id),
-            json={'v': version, 'skillIds': skill_ids},
+            params={'v': version, 'skillIds': skill_ids},
             **auth_args
         )
 
@@ -285,23 +238,12 @@ class OperationalRealtime(LoginService):
     def sla_histogram(self, time_frame: int, version: int = 1, skill_ids: Optional[str] = None,
                       group_ids: Optional[str] = None, histogram: Optional[str] = None) -> dict:
         """
+        Documentation:
+        https://developers.liveperson.com/data-operational-realtime-sla-histogram.html
+
         Retrieves the distribution of visitors’ wait time in the queue, before an agent replies to their chat. The wait
         time in the histogram is accurate (no more than +/- 5 seconds). Histogram bucket sizes are specified in
         multiples of 5 seconds.
-
-        Note: SLA is calculated using bucket-based aggregation techniques, in which events are collected into 5 minute
-        buckets. For this reason, events may be included that took place outside of the requested time frame.
-
-        Example: If the current time is 13:29 and the required time frame is 7 minutes, the API will use 2 buckets:
-        13:25 and 13:30. The time of the collected data is actually not 13:22-13:29, but 13:20-13:29.
-
-        Note: this method is subject to Rate Limiting. This means that the maximum number of concurrent requests is
-        limited on the server side. As most requests are in milliseconds, the likelihood of your requests actually
-        encountering an issue is rare but should that happen, you can expect to receive a 429 Status Code from the
-        server.
-
-        Reference:
-        https://developers.liveperson.com/data-operational-realtime-sla-histogram.html
 
         :param time_frame: The time range (in minutes) in which the data can be filtered. Where end time = current time,
          and start time = end time - timeframe. The maximum timeframe value is 1440 minutes (24 hours).
@@ -329,10 +271,10 @@ class OperationalRealtime(LoginService):
         url = 'https://{}/operations/api/account/{}/sla'
 
         # Generate request
-        r = requests.post(
+        r = requests.get(
             url=url.format(self.am_domain, self.account_id),
-            json={'timeframe': time_frame, 'v': version, 'skillIds': skill_ids, 'groupIds': group_ids,
-                  'histogram': histogram},
+            params={'timeframe': time_frame, 'v': version, 'skillIds': skill_ids, 'groupIds': group_ids,
+                    'histogram': histogram},
             **auth_args
         )
 
