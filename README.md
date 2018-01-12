@@ -69,6 +69,8 @@ mi_conn = MessagingInteractions(auth=auth)
 Reference:
 https://developers.liveperson.com/data-messaging-interactions-conversations.html
 
+Note: Will return 1 offset of data.
+
 Arguments:
 
 * body: dict Note: Check reference for details.
@@ -81,7 +83,26 @@ body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
 data = mi_conn.conversations(body)
 ```
 
-#### 2. Get conversation by conversation id
+#### 2. All Conversations
+Reference:
+https://developers.liveperson.com/data-messaging-interactions-conversations.html
+
+Note: Will return all offsets of data as a list of 'conversationHistoryRecords'
+
+Arguments:
+
+* body: dict Note: Check reference for details.
+* offset: int (OPTIONAL) Defaults to 0
+* limit: int (OPTIONAL) Defaults to 100
+* sort: str (OPTIONAL)
+* max_concurrent_requests: int (OPTIONAL) Defaults to 5.  Max: 25
+
+```python
+body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
+data = mi_conn.all_conversations(body)
+```
+
+#### 3. Get conversation by conversation id
 Reference:
 https://developers.liveperson.com/data-messaging-interactions-get-conversation-by-conversation-id.html
 
@@ -93,7 +114,7 @@ Arguments:
 data = mi_conn.get_conversation_by_conversation_id(conversation_id='1234abc')
 ```
 
-#### 3. Get conversation by consumer id
+#### 4. Get conversation by consumer id
 Reference:
 https://developers.liveperson.com/data-messaging-interactions-get-conversations-by-consumer-id.html
 
@@ -120,12 +141,31 @@ Arguments:
 * limit: int (OPTIONAL) Defaults to 100
 * sort: str (OPTIONAL)
 
+Note: Will return 1 offset of data.
 
 Reference:
 https://developers.liveperson.com/data-engagement-history-overview.html
 ```python
 body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
 data = eh_conn.engagements(body)
+```
+
+#### 2. All Engagements
+Arguments:
+
+* body: dict (Note: Check reference for details.)
+* offset: int (OPTIONAL) Defaults to 0
+* limit: int (OPTIONAL) Defaults to 100
+* sort: str (OPTIONAL)
+* max_concurrent_requests: int (OPTIONAL) Defaults to 5.  Max: 25
+
+Note: Will return all offsets of data as a list of 'interactionHistoryRecords'
+
+Reference:
+https://developers.liveperson.com/data-engagement-history-overview.html
+```python
+body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
+data = eh_conn.all_engagements(body)
 ```
 
 ## Agent Metrics API
