@@ -12,14 +12,6 @@ The following APIs are supported:
 * Messaging Operations API
 * Operational Realtime API
 
-
-## Dependencies
-* requests
-* requests_oauthlib
-```bash
-$ pip install requests requests_oauthlib
-```
-
 ## Installation
 ```bash
 $ pip install --upgrade lp_api_wrapper
