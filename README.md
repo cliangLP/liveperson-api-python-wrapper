@@ -208,7 +208,7 @@ from lp_api_wrapper import MessagingOperations
 mo_conn = MessagingOperations(auth=auth)
 ```
 
-#### 1. Messaging Operations
+#### 1. Messaging Conversation
 Arguments:
 
 * time_frame: int
@@ -220,7 +220,7 @@ Arguments:
 Reference:
 https://developers.liveperson.com/data-messaging-operations-messaging-conversation.html
 ```python
-data = mo_conn.messaging_operations(time_frame=1440)
+data = mo_conn.messaging_conversation(time_frame=1440)
 ```
 
 #### 2. Messaging CSAT Distribution
@@ -284,7 +284,7 @@ Arguments:
 Reference:
 https://developers.liveperson.com/data-operational-realtime-agent-activity.html
 ```python
-data = or_conn.agent_activity(time_frame=1440)
+data = or_conn.agent_activity(time_frame=1440, agent_ids='123, 456')
 ```
 
 #### 4. Current Queue State
