@@ -336,7 +336,7 @@ Arguments:
 
 * version: float (OPTIONAL) Default is 2.0
 * include_deleted: bool (OPTIONAL) 
-* santize_data: bool (OPTIONAL)
+* sanitize_data: bool (OPTIONAL)
 * lang: string (OPTIONAL)
 * select: string (OPTIONAL)
 * group_by: string (OPTIONAL)
