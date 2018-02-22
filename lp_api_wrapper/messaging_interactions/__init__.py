@@ -1,1 +1,0 @@
-from lp_api_wrapper.messaging_interactions.messaging_interactions import MessagingInteractions

@@ -1,9 +1,4 @@
-from lp_api_wrapper.util.domain_service import DomainService
-from lp_api_wrapper.util.login_service import LoginService
-from lp_api_wrapper.util.login_service import UserLogin
-from lp_api_wrapper.util.login_service import OAuthLogin
-from lp_api_wrapper.engagement_history.engagement_history import EngagementHistory
-from lp_api_wrapper.messaging_interactions.messaging_interactions import MessagingInteractions
-from lp_api_wrapper.messaging_operations.messaging_operations import MessagingOperations
-from lp_api_wrapper.operational_realtime.operational_realtime import OperationalRealtime
-from lp_api_wrapper.agent_metrics.agent_metrics import AgentMetrics
+from lp_api_wrapper.util import (DomainService, LoginService, UserLogin, OAuthLogin)
+from lp_api_wrapper.data import (AgentMetrics, EngagementHistory, MessagingInteractions, MessagingOperations,
+                                 OperationalRealtime)
+from lp_api_wrapper.account_configuration import (PredefinedContent, PredefinedCategories)
