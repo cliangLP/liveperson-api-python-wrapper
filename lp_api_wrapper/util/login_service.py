@@ -9,10 +9,7 @@ https://developers.liveperson.com/login-getting-started.html
 import requests
 from requests_oauthlib import OAuth1
 from lp_api_wrapper.util.domain_service import DomainService
-from typing import Union
-
-__author__ = 'Anthony Jones'
-__email__ = 'ajones@liveperson.com'
+from typing import Union, Optional
 
 
 class UserLogin:
@@ -23,8 +20,8 @@ class UserLogin:
 
 
 class OAuthLogin:
-    def __init__(self, account_id: str, app_key: str, app_secret: str, access_token: str,
-                 access_token_secret: str) -> None:
+    def __init__(self, account_id: str, app_key: str, app_secret: str, access_token: Optional[str] = None,
+                 access_token_secret: Optional[str] = None) -> None:
         self.account_id = account_id
         self.app_key = app_key
         self.app_secret = app_secret

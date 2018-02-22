@@ -2,9 +2,6 @@ import requests
 from lp_api_wrapper.util.login_service import LoginService, UserLogin, OAuthLogin
 from typing import Optional, Union, Any
 
-__author__ = 'Anthony Jones'
-__email__ = 'ajones@liveperson.com'
-
 
 class PredefinedCategories(LoginService):
     def __init__(self, auth: Union[UserLogin, OAuthLogin]) -> None:

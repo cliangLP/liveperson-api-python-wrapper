@@ -10,9 +10,6 @@ https://developers.liveperson.com/agent-domain-domain-api.html
 
 import requests
 
-__author__ = 'Anthony Jones'
-__email__ = 'ajones@liveperson.com'
-
 
 class DomainService:
     def __init__(self, account_id: str) -> None:

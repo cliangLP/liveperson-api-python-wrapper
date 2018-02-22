@@ -35,9 +35,6 @@ import requests
 from lp_api_wrapper.util.login_service import LoginService, UserLogin, OAuthLogin
 from typing import List, Optional, Union
 
-__author__ = 'Anthony Jones'
-__email__ = 'ajones@liveperson.com'
-
 
 class MessagingInteractions(LoginService):
     def __init__(self, auth: Union[UserLogin, OAuthLogin]) -> None:
