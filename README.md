@@ -353,7 +353,7 @@ data = pdc_conn.get_predefined_content_items()
 Create Predefined Categories Connection.
 ```python
 from lp_api_wrapper import PredefinedCategories
-or_conn = PredefinedCategories(auth=auth)
+pdc_conn = PredefinedCategories(auth=auth)
 ```
 
 #### 1. Categories List
