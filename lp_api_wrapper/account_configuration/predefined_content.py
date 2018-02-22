@@ -1,6 +1,6 @@
 import requests
 from lp_api_wrapper.util.login_service import LoginService, UserLogin, OAuthLogin
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 __author__ = 'Anthony Jones'
 __email__ = 'ajones@liveperson.com'
@@ -11,8 +11,10 @@ class PredefinedContent(LoginService):
         super().__init__(auth=auth)
         self.pdc_domain = self.get_domain(service_name='accountConfigReadWrite')
 
-    def get_predefined_content_items(self, version=2.0, include_deleted=None, sanitize_data=None, lang=None,
-                                     select=None, group_by=None, skill_ids=None, ids=None):
+    def get_predefined_content_items(self, version: float = 2.0, include_deleted: Optional[bool] = None,
+                                     sanitize_data: Optional[bool] = None, lang: Optional[str] = None,
+                                     select: Optional[str] = None, group_by: Optional[str] = None,
+                                     skill_ids: Optional[str] = None, ids: Optional[str] = None):
 
         # Establish Authorization
         auth_args = self.authorize(headers={'content-type': 'application/json'})
