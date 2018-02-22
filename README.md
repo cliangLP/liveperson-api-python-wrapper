@@ -11,6 +11,10 @@ The following APIs are supported:
 * Agent Metrics API
 * Messaging Operations API
 * Operational Realtime API
+* Predefined Content API
+    * *Note: only get_predefined_content_items method*  
+* Predefined Categories API
+    * *Note: only categories_list method*  
 
 ## Installation
 ```bash
@@ -33,6 +37,12 @@ from lp_api_wrapper import MessagingOperations
 
 # For Operational Realtime API
 from lp_api_wrapper import OperationalRealtime
+
+# For Predefined Content API
+from lp_api_wrapper import PredefinedContent
+
+# For Predefined Categories API
+from lp_api_wrapper import PredefinedCategories
 ```
 
 ## Login/Authentication
@@ -313,3 +323,47 @@ https://developers.liveperson.com/data-operational-realtime-sla-histogram.html
 ```python
 data = or_conn.sla_histogram(time_frame=1440)
 ```
+
+## Predefined Content API
+Create Predefined Content Connection.
+```python
+from lp_api_wrapper import PredefinedContent
+pdc_conn = PredefinedContent(auth=auth)
+```
+
+#### 1. Get Predefined Content Items
+Arguments:
+
+* version: float (OPTIONAL) Default is 2.0
+* include_deleted: bool (OPTIONAL) 
+* santize_data: bool (OPTIONAL)
+* lang: string (OPTIONAL)
+* select: string (OPTIONAL)
+* group_by: string (OPTIONAL)
+* skill_ids: string (OPTIONAL)
+* ids: string (OPTIONAL)
+
+Reference:
+https://developers.liveperson.com/account-configuration-predefined-content-get-items.html
+```python
+data = pdc_conn.get_predefined_content_items()
+```
+
+## Predefined Categories API
+Create Predefined Categories Connection.
+```python
+from lp_api_wrapper import PredefinedCategories
+or_conn = PredefinedCategories(auth=auth)
+```
+
+#### 1. Categories List
+Arguments:
+
+* version: float (OPTIONAL) Default is 2.0
+* select: string (OPTIONAL)
+* include_deleted: bool (OPTIONAL) 
+
+Reference:
+https://developers.liveperson.com/account-configuration-predefined-list.html
+```python
+data = pdc_conn.categories_list()
