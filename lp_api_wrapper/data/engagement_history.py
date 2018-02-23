@@ -78,7 +78,7 @@ class EngagementHistory(LoginService):
             r.raise_for_status()
 
     def all_engagements(self, body: dict, offset: int = 0, limit: int = 100, sort: Optional[str] = None,
-                        max_concurrent_requests: int = 5) -> List[dict]:
+                        max_concurrent_requests: int = 5, debug: bool = False) -> Union[List, List[dict]]:
         """
         Documentation:
         https://developers.liveperson.com/data_api-messaging-interactions-conversations.html
@@ -93,18 +93,15 @@ class EngagementHistory(LoginService):
         :param limit: Max amount of conversations to be received in the response.  Default and max is 100.
         :param sort: Sort the results in a predefined order.
         :param body: Enter body parameters that are the same as the API documentation.
-        :param max_concurrent_requests: Maximum concurrent requests
+        :param max_concurrent_requests: Maximum concurrent requests.
+        :param debug: Shows status of requests.
         :return: List of all interactionHistoryRecords within the start time range.
         """
 
-        # Set at 25 to prevent overloading API servers.
-        if max_concurrent_requests > 25:
-            raise ValueError('Please do not go over 25 concurrent requests.')
-
         count = self.engagements(body, offset, limit, sort)['_metadata']['count']
-        # Method will breaks out if there are no records.
+        # Returns an empty list
         if count == 0:
-            raise ValueError('There are 0 records for this request.')
+            return []
 
         # Inner function to process concurrent requests.
         def get_record(b, o, l, s):
@@ -133,7 +130,8 @@ class EngagementHistory(LoginService):
             }
 
             for future in concurrent.futures.as_completed(future_requests):
-                print('Info: Saving data from request with offset {}.'.format(future_requests[future]))
+                if debug:
+                    print('Record Count: {}, Offset: {} finished.'.format(count, future_requests[future]))
                 # Add data to results.
                 interaction_history_records.extend(future.result())
 
