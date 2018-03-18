@@ -97,11 +97,12 @@ Arguments:
 * offset: int (OPTIONAL) Defaults to 0
 * limit: int (OPTIONAL) Defaults to 100
 * sort: str (OPTIONAL)
+* debug: bool (OPTIONAL) Defaults to False ~ Prints offset status for data requests
 * max_concurrent_requests: int (OPTIONAL) Defaults to 5.  Max: 25
 
 ```python
 body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
-data = mi_conn.all_conversations(body)
+data = mi_conn.all_conversations(body, debug=True)
 ```
 
 #### 3. Get conversation by conversation id
@@ -159,6 +160,7 @@ Arguments:
 * offset: int (OPTIONAL) Defaults to 0
 * limit: int (OPTIONAL) Defaults to 100
 * sort: str (OPTIONAL)
+* debug: bool (OPTIONAL) Defaults to False ~ Prints offset status for data requests
 * max_concurrent_requests: int (OPTIONAL) Defaults to 5.  Max: 25
 
 Note: Will return all offsets of data as a list of 'interactionHistoryRecords'
@@ -167,7 +169,7 @@ Reference:
 https://developers.liveperson.com/data-engagement-history-overview.html
 ```python
 body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
-data = eh_conn.all_engagements(body)
+data = eh_conn.all_engagements(body, debug=True)
 ```
 
 ## Agent Metrics API
