@@ -27,18 +27,19 @@ survey_data = []
 for ihr in interaction_history_records:
     if 'surveys' in ihr:
         for survey_type, surveys in ihr['surveys'].items():
-            survey_records = []
-            for survey in surveys:
-                survey_record = dict(
-                    # Experiment by adding additional info parameters.
-                    accountId=ihr['info']['accountId'],
-                    engagementID=ihr['info']['engagementId'],
-                    agentId=ihr['info']['agentId'],
-                    surveyType=survey_type
-                )
-                survey_record.update(survey)
-                survey_records.append(OrderedDict(survey_record))
-            survey_data.extend(survey_records)
+            if type(surveys) == list:
+                survey_records = []
+                for survey in surveys:
+                    survey_record = dict(
+                        # Experiment by adding additional info parameters.
+                        accountId=ihr['info']['accountId'],
+                        engagementID=ihr['info']['engagementId'],
+                        agentId=ihr['info']['agentId'],
+                        surveyType=survey_type
+                    )
+                    survey_record.update(survey)
+                    survey_records.append(OrderedDict(survey_record))
+                survey_data.extend(survey_records)
 
 # Convert to a Pandas DF
 survey_df = pd.DataFrame(survey_data)
