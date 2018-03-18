@@ -1,12 +1,13 @@
 from setuptools import setup, find_packages
 
-v = '0.0.1'
+v = '0.4.3'
 
 setup(
     name='lp_api_wrapper',
     version=v,
     description='Unofficial LivePerson API Python Wrapper',
     author='Anthony Jones',
+    author_email='anthonybjones@me.com',
     url='https://github.com/ajoneslp/liveperson-api-python-wrapper',
     download_url='https://github.com/ajoneslp/liveperson-api-python-wrapper/archive/{}.tar.gz'.format(v),
     packages=find_packages(),
