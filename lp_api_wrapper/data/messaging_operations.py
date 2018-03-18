@@ -90,6 +90,88 @@ class MessagingOperations(LoginService):
             print('Error: {}'.format(r.json()))
             r.raise_for_status()
 
+    def messaging_current_queue_health(self, version: int = 1, skill_ids: Optional[str] = None):
+        """
+        Documentation:
+        https://developers.liveperson.com/data-messaging-operations-messaging-current-queue-health.html
+
+        Retrieves the information about the current messaging queue state (and all its related metrics) in the account
+        and skill level
+
+        :param version: Version of API e.g. v=1
+        :param skill_ids: When provided, metrics on the response will be grouped by the requested skills. When not
+         provided, defaults to 'all' skills. You can provide one or more skillIDs.
+         Example: skillIds=4,153. To retrieve all skills active for the time period,
+         use skillIds=all or do not specify this parameter at all.
+        :return:
+        """
+
+        # Establish Authorization
+        auth_args = self.authorize(headers={'content-type': 'application/json'})
+
+        # Messaging Current Queue Health URL
+        url = 'https://{}/operations/api/account/{}/msgqueuehealth/current/'
+
+        # Generate request
+        r = requests.get(
+            url=url.format(self.am_domain, self.account_id),
+            params={'v': version, 'skillIds': skill_ids},
+            **auth_args
+        )
+
+        # Check request status
+        if r.status_code == requests.codes.ok:
+            return r.json()
+        else:
+            print('Error: {}'.format(r.json()))
+            r.raise_for_status()
+
+    def messaging_queue_health(self, time_frame: int, version: int = 1, skill_ids: Optional[str] = None,
+                               interval: Optional[int] = None):
+        """
+        Documentation:
+        https://developers.liveperson.com/data-messaging-operations-messaging-queue-health.html
+
+        Retrieves information about the state of the queue (with all related metrics) for up to the last 24 hours at
+        the account or skill level.
+
+        :param time_frame: The time range (in minutes) in which the data can be filtered. Where end time = current time,
+         and start time = end time - timeframe. The maximum timeframe value is 1440 minutes (24 hours).
+        :param version: Version of API, for example, v=1.
+        :param skill_ids: When provided, metrics on the response will be grouped by the requested skills.
+         When not provided, metrics on the response will be calculated for all skills. You can provide one or more
+         skillIDs.
+         Example: skillIds=4,153. To retrieve all skills active for the time period, use skillIds=all, or do not
+         specify this parameter at all.
+        :param interval: Interval size in minutes (the minimum value is five minutes). When provided,
+         the returned data will be aggregated by intervals of the requested size. The interval has to be smaller or
+         equal to the time frame and also a divisor of the time frame.
+         Example:
+          time_frame=60, interval=30 (correct)
+          time_frame=60, interval=61 (bad request)
+          time_frame=60, interval=31 (bad request)
+        :return:
+        """
+        # Establish Authorization
+        auth_args = self.authorize(headers={'content-type': 'application/json'})
+
+        # Messaging Queue Health URL
+        url = 'https://{}/operations/api/account/{}/msgqueuehealth'
+
+        # Generate request
+        r = requests.get(
+            url=url.format(self.am_domain, self.account_id),
+            params={'timeframe': time_frame, 'v': version, 'skillIds': skill_ids, 'interval': interval},
+            **auth_args
+        )
+
+        # Check request status
+        if r.status_code == requests.codes.ok:
+            return r.json()
+        else:
+            print('Error: {}'.format(r.json()))
+            r.raise_for_status()
+
     def messaging_csat_distribution(self, time_frame: int, version: int = 1, skill_ids: Optional[str] = None,
                                     agent_ids: Optional[str] = None) -> dict:
         """
