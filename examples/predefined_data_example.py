@@ -50,6 +50,8 @@ class PredefinedData:
                         'predefined_content_msg': clean_text(pdc_data['msg']),
                         'predefined_content_lang': clean_text(pdc_data['lang'])
                     }
+
+                    # Map Predefined Categories Names to Ids.
                     if 'categoriesIds' in pdc_item:
                         row['predefined_category_ids'] = ', '.join(
                             list(map(lambda pdc: str(pdc), pdc_item['categoriesIds']))
@@ -60,6 +62,18 @@ class PredefinedData:
                     else:
                         row['predefined_category_ids'] = 'NULL'
                         row['predefined_category_names'] = 'NULL'
+
+                    # Get HotKeys
+                    if 'hotkey' in pdc_item:
+                        row['hot_key_prefix'] = pdc_item['hotkey']['prefix']
+                        row['hot_key_suffix'] = pdc_item['hotkey']['suffix']
+                    elif 'hot-key' in pdc_item:
+                        row['hot_key_prefix'] = pdc_item['hot-key']['prefix']
+                        row['hot_key_suffix'] = pdc_item['hot-key']['suffix']
+                    else:
+                        row['hot_key_prefix'] = 'NULL'
+                        row['hot_key_suffix'] = 'NULL'
+
                     predefined_data.append(OrderedDict(row))
             except KeyError as e:
                 print('Error: {}'.format(e))
