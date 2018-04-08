@@ -8,8 +8,8 @@ https://developers.liveperson.com/login-getting-started.html
 
 import requests
 from requests_oauthlib import OAuth1
-from lp_api_wrapper.util.domain_service import DomainService
-from typing import Union, Optional
+from .domain_service import DomainService
+from typing import (Union, Optional)
 
 
 class UserLogin:

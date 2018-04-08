@@ -30,8 +30,8 @@ Usage Example:
 
 import concurrent.futures
 import requests
-from lp_api_wrapper.util.login_service import LoginService, UserLogin, OAuthLogin
-from typing import List, Optional, Union
+from ...util import (LoginService, UserLogin, OAuthLogin)
+from typing import (List, Optional, Union)
 
 
 class EngagementHistory(LoginService):

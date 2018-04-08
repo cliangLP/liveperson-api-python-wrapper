@@ -1,5 +1,5 @@
-from lp_api_wrapper.data.agent_metrics import AgentMetrics
-from lp_api_wrapper.data.engagement_history import EngagementHistory
-from lp_api_wrapper.data.messaging_interactions import MessagingInteractions
-from lp_api_wrapper.data.messaging_operations import MessagingOperations
-from lp_api_wrapper.data.operational_realtime import OperationalRealtime
+from .agent_metrics import AgentMetrics
+from .engagement_history import EngagementHistory
+from .messaging_interactions import (MessagingInteractions, MessagingInteractionsEndpoints)
+from .messaging_operations import MessagingOperations
+from .operational_realtime import OperationalRealtime

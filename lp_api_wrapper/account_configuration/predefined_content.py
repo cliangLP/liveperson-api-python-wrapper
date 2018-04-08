@@ -1,5 +1,5 @@
 import requests
-from lp_api_wrapper.util.login_service import LoginService, UserLogin, OAuthLogin
+from ..util.login_service import (LoginService, UserLogin, OAuthLogin)
 from typing import Optional, Union
 
 
