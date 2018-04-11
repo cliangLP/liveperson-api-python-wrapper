@@ -3,7 +3,7 @@ Provides a Data Structure for a Conversation History Record from the Messaging I
 """
 
 from collections import namedtuple
-from typing import List
+from typing import List, Optional
 
 
 # Declare new types to store each event from data.
@@ -22,8 +22,9 @@ Campaign = namedtuple('Campaign', ['conversation_id', 'campaign_engagement_id', 
                                    'visitor_profile_id', 'visitor_profile_name', 'lob_id', 'lob_name', 'location_id',
                                    'location_name', 'behavior_system_default', 'profile_system_default'])
 
-Message = namedtuple('MessageRecord', ['conversation_id', 'time', 'time_l', 'type', 'message_data', 'message_id', 'seq',
-                                       'dialog_id', 'participant_id', 'source', 'device', 'sent_by', 'context_data'])
+MessageRecord = namedtuple('MessageRecord', ['conversation_id', 'time', 'time_l', 'type', 'message_data', 'message_id',
+                                             'seq', 'dialog_id', 'participant_id', 'source', 'device', 'sent_by',
+                                             'context_data'])
 
 AgentParticipant = namedtuple('AgentParticipant', ['conversation_id', 'agent_id', 'agent_login_name', 'agent_nickname',
                                                    'agent_full_name', 'agent_deleted', 'time', 'time_l', 'role',
@@ -74,24 +75,24 @@ PersonalInfo = namedtuple('PersonalInfo', ['conversation_id', 'server_time_stamp
 class ConversationHistoryRecord:
     def __init__(self, record: dict) -> None:
         try:
-            self.conversation_id = str(record['info']['conversationId'])
-            self.info = self._set_info(data=record['info'])
+            self.conversation_id: str = str(record['info']['conversationId'])
+            self.info: Info = self._set_info(data=record['info'])
         except KeyError:
             raise KeyError('Not a Conversation History Record!')
 
-        self.campaign = None
-        self.message_records = None
-        self.agent_participants = None
-        self.agent_participants_active = None
-        self.consumer_participants = None
-        self.transfers = None
-        self.interactions = None
-        self.message_scores = None
-        self.message_statuses = None
-        self.conversation_surveys = None
-        self.co_browse_sessions = None
-        self.summary = None
-        self.sdes = None
+        self.campaign: Optional[Campaign] = None
+        self.message_records: Optional[List[MessageRecord]] = None
+        self.agent_participants: Optional[List[AgentParticipant]] = None
+        self.agent_participants_active: Optional[List[AgentParticipant]] = None
+        self.consumer_participants: Optional[List[ConsumerParticipant]] = None
+        self.transfers: Optional[List[Transfer]] = None
+        self.interactions: Optional[List[Interaction]] = None
+        self.message_scores: Optional[List[MessageScore]] = None
+        self.message_statuses: Optional[List[MessageStatus]] = None
+        self.conversation_surveys: Optional[List[Survey]] = None
+        self.co_browse_sessions: Optional[List[CoBrowseSession]] = None
+        self.summary: Optional[Summary] = None
+        self.sdes: Optional[Sdes] = None
 
         for event in ['campaign', 'messageRecords', 'agentParticipants', 'agentParticipantsActive',
                       'consumerParticipants', 'transfers', 'interactions', 'messageScores', 'messageStatuses',
@@ -191,7 +192,7 @@ class ConversationHistoryRecord:
             profile_system_default=data['profileSystemDefault'] if 'profileSystemDefault' in data else None
         )
 
-    def _set_message_records(self, data: dict) -> List[Message]:
+    def _set_message_records(self, data: dict) -> List[MessageRecord]:
         # TODO: Parse context data (contains context data, structured metadata, bot response, intent, and action reason)
 
         def parse_message_data(item):
@@ -200,7 +201,7 @@ class ConversationHistoryRecord:
             else:
                 return None
 
-        return [Message(
+        return [MessageRecord(
             conversation_id=self.conversation_id,
             time=item['time'] if 'time' in item else None,
             time_l=item['timeL'] if 'timeL' in item else None,
