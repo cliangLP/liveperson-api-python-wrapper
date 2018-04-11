@@ -2,7 +2,6 @@
 Provides a Data Structure for a Conversation History Record from the Messaging Interactions API.
 """
 
-import re
 from collections import namedtuple
 from typing import List
 
@@ -71,59 +70,64 @@ PersonalInfo = namedtuple('PersonalInfo', ['conversation_id', 'server_time_stamp
                                            'company', 'customer_age', 'email', 'phone', 'language',
                                            'event_server_time_stamp', 'event_sde_type'])
 
-events = ['campaign', 'messageRecords', 'agentParticipants', 'agentParticipantsActive', 'consumerParticipants',
-          'transfers', 'interactions', 'messageScores', 'messageStatuses', 'conversationSurveys', 'coBrowseSessions',
-          'summary', 'sdes']
-
-
-def convert_case(name: str) -> str:
-    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
-
 
 class ConversationHistoryRecord:
     def __init__(self, record: dict) -> None:
-        # Get Info
         try:
             self.conversation_id = str(record['info']['conversationId'])
-            self.info = self._parse_info(data=record['info'])
+            self.info = self._set_info(data=record['info'])
         except KeyError:
             raise KeyError('Not a Conversation History Record!')
 
-        for event in events:
-            event_var = convert_case(event)
+        self.campaign = None
+        self.message_records = None
+        self.agent_participants = None
+        self.agent_participants_active = None
+        self.consumer_participants = None
+        self.transfers = None
+        self.interactions = None
+        self.message_scores = None
+        self.message_statuses = None
+        self.conversation_surveys = None
+        self.co_browse_sessions = None
+        self.summary = None
+        self.sdes = None
+
+        for event in ['campaign', 'messageRecords', 'agentParticipants', 'agentParticipantsActive',
+                      'consumerParticipants', 'transfers', 'interactions', 'messageScores', 'messageStatuses',
+                      'conversationSurveys', 'coBrowseSessions', 'summary', 'sdes']:
             if event in record and record[event]:
-                setattr(self, event_var, self._parse_event(event=event, data=record[event]))
-            else:
-                setattr(self, event_var, None)
+                self._parse_event(event=event, data=record[event])
 
     def _parse_event(self, event, data):
         if event == 'campaign':
-            return self._parse_campaign(data=data)
+            self.campaign = self._set_campaign(data=data)
         elif event == 'messageRecords':
-            return self._parse_message_records(data=data)
-        elif event in ['agentParticipants', 'agentParticipantsActive']:
-            return self._parse_agent_participants(data=data)
+            self.message_records = self._set_message_records(data=data)
+        elif event == 'agentParticipants':
+            self.agent_participants = self._set_agent_participants(data=data)
+        elif event == 'agentParticipantsActive':
+            self.agent_participants_active = self._set_agent_participants(data=data)
         elif event == 'consumerParticipants':
-            return self._parse_consumer_participants(data=data)
+            self.consumer_participants = self._set_consumer_participants(data=data)
         elif event == 'transfers':
-            return self._parse_transfers(data=data)
+            self.transfers = self._set_transfers(data=data)
         elif event == 'interactions':
-            return self._parse_interactions(data=data)
+            self.interactions = self._set_interactions(data=data)
         elif event == 'messageScores':
-            return self._parse_message_scores(data=data)
+            self.message_scores = self._set_message_scores(data=data)
         elif event == 'messageStatuses':
-            return self._parse_message_statuses(data=data)
+            self.message_scores = self._set_message_statuses(data=data)
         elif event == 'conversationSurveys':
-            return self._parse_conversation_surveys(data=data)
+            self.conversation_surveys = self._set_conversation_surveys(data=data)
         elif event == 'coBrowseSessions':
-            return self._parse_co_browse_sessions(data=data)
+            self.co_browse_sessions = self._set_co_browse_sessions(data=data)
         elif event == 'summary':
-            return self._parse_summary(data=data)
+            self.summary = self._set_summary(data=data)
         elif event == 'sdes':
-            return self._parse_sdes(data=data)
+            self.sdes = self._set_sdes(data=data)
 
-    def _parse_info(self, data: dict) -> Info:
+    def _set_info(self, data: dict) -> Info:
 
         return Info(
             conversation_id=self.conversation_id,
@@ -156,7 +160,7 @@ class ConversationHistoryRecord:
             is_partial=data['isPartial'] if 'isPartial' in data else None
         )
 
-    def _parse_campaign(self, data: dict) -> Campaign:
+    def _set_campaign(self, data: dict) -> Campaign:
 
         return Campaign(
             conversation_id=self.conversation_id,
@@ -187,7 +191,7 @@ class ConversationHistoryRecord:
             profile_system_default=data['profileSystemDefault'] if 'profileSystemDefault' in data else None
         )
 
-    def _parse_message_records(self, data: dict) -> List[Message]:
+    def _set_message_records(self, data: dict) -> List[Message]:
         # TODO: Parse context data (contains context data, structured metadata, bot response, intent, and action reason)
 
         def parse_message_data(item):
@@ -212,7 +216,7 @@ class ConversationHistoryRecord:
             context_data=item['contextData'] if 'contextData' in item else None
         ) for item in data]
 
-    def _parse_agent_participants(self, data: dict) -> List[AgentParticipant]:
+    def _set_agent_participants(self, data: dict) -> List[AgentParticipant]:
 
         return [AgentParticipant(
             conversation_id=self.conversation_id,
@@ -231,7 +235,7 @@ class ConversationHistoryRecord:
             permission=item['permission'] if 'permission' in item else None
         ) for item in data]
 
-    def _parse_consumer_participants(self, data: dict) -> List[ConsumerParticipant]:
+    def _set_consumer_participants(self, data: dict) -> List[ConsumerParticipant]:
 
         return [ConsumerParticipant(
             conversation_id=self.conversation_id,
@@ -245,7 +249,7 @@ class ConversationHistoryRecord:
             token=item['token'] if 'token' in item else None
         ) for item in data]
 
-    def _parse_transfers(self, data: dict) -> List[Transfer]:
+    def _set_transfers(self, data: dict) -> List[Transfer]:
 
         return [Transfer(
             conversation_id=self.conversation_id,
@@ -268,7 +272,7 @@ class ConversationHistoryRecord:
             contextData=item['contextData'] if 'contextData' in item else None
         ) for item in data]
 
-    def _parse_interactions(self, data: dict) -> List[Interaction]:
+    def _set_interactions(self, data: dict) -> List[Interaction]:
 
         return [Interaction(
             conversation_id=self.conversation_id,
@@ -281,7 +285,7 @@ class ConversationHistoryRecord:
             interactive_sequence=item['interactiveSequence'] if 'interactiveSequence' in item else None
         ) for item in data]
 
-    def _parse_message_scores(self, data: dict) -> List[MessageScore]:
+    def _set_message_scores(self, data: dict) -> List[MessageScore]:
 
         return [MessageScore(
             conversation_id=self.conversation_id,
@@ -292,7 +296,7 @@ class ConversationHistoryRecord:
             message_raw_score=item['messageRawScore'] if 'messageRawScore' in item else None
         ) for item in data]
 
-    def _parse_message_statuses(self, data: dict) -> List[MessageStatus]:
+    def _set_message_statuses(self, data: dict) -> List[MessageStatus]:
 
         return [MessageStatus(
             conversation_id=self.conversation_id,
@@ -305,7 +309,7 @@ class ConversationHistoryRecord:
             time_l=item['timeL'] if 'timeL' in item else None
         ) for item in data]
 
-    def _parse_conversation_surveys(self, data: dict) -> List[Survey]:
+    def _set_conversation_surveys(self, data: dict) -> List[Survey]:
 
         surveys = []
         for survey in data:
@@ -335,7 +339,7 @@ class ConversationHistoryRecord:
                 )
         return surveys
 
-    def _parse_co_browse_sessions(self, data: dict) -> List[CoBrowseSession]:
+    def _set_co_browse_sessions(self, data: dict) -> List[CoBrowseSession]:
 
         return [CoBrowseSession(
             conversation_id=self.conversation_id,
@@ -354,7 +358,7 @@ class ConversationHistoryRecord:
             agent_id=item['agentId'] if 'agentId' in item else None
         ) for item in data['coBrowseSessionsList']]
 
-    def _parse_summary(self, data: dict) -> Summary:
+    def _set_summary(self, data: dict) -> Summary:
 
         return Summary(
             conversation_id=self.conversation_id,
@@ -362,7 +366,7 @@ class ConversationHistoryRecord:
             last_updated_time=data['lastUpdatedTime'] if 'lastUpdatedTime' in data else None
         )
 
-    def _parse_sdes(self, data: dict) -> Sdes:
+    def _set_sdes(self, data: dict) -> Sdes:
 
         def filter_customer_info(event_data):
             c_info = event_data['customerInfo']['customerInfo']
