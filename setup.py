@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-v = '0.5.3'
+v = '0.5.4'
 
 setup(
     name='lp_api_wrapper',
