@@ -118,7 +118,7 @@ class ConversationHistoryRecord:
         elif event == 'messageScores':
             self.message_scores = self._set_message_scores(data=data)
         elif event == 'messageStatuses':
-            self.message_scores = self._set_message_statuses(data=data)
+            self.message_statuses = self._set_message_statuses(data=data)
         elif event == 'conversationSurveys':
             self.conversation_surveys = self._set_conversation_surveys(data=data)
         elif event == 'coBrowseSessions':
