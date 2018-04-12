@@ -64,7 +64,7 @@ CustomerInfo = namedtuple('CustomerInfo', ['conversation_id', 'server_time_stamp
                                            'balance', 'customer_id', 'social_id', 'imei', 'user_name', 'account_name',
                                            'role', 'last_payment_year', 'last_payment_month', 'last_payment_day',
                                            'registration_year', 'registration_month', 'registration_day',
-                                           'company_size', 'company_branch', 'store_zip_code', 'store_Number',
+                                           'company_size', 'company_branch', 'store_zip_code', 'store_number',
                                            'login_status', 'event_server_time_stamp', 'event_sde_type'])
 
 PersonalInfo = namedtuple('PersonalInfo', ['conversation_id', 'server_time_stamp', 'name', 'surname', 'gender',
@@ -421,7 +421,7 @@ class ConversationHistoryRecord:
                 company_size=c_info['companySize'] if 'companySize' in c_info else None,
                 company_branch=c_info['companyBranch'] if 'companyBranch' in c_info else None,
                 store_zip_code=c_info['storeZipCode'] if 'storeZipCode' in c_info else None,
-                store_Number=c_info['storeNumber'] if 'storeNumber' in c_info else None,
+                store_number=c_info['storeNumber'] if 'storeNumber' in c_info else None,
                 login_status=c_info['loginStatus'] if 'loginStatus' in c_info else None,
                 event_server_time_stamp=event_data['serverTimeStamp'],
                 event_sde_type=event_data['sdeType']
