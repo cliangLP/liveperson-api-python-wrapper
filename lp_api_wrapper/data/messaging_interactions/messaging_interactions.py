@@ -32,7 +32,7 @@ Usage Example:
 
 import concurrent.futures
 from ..messaging_interactions.messaging_interactions_endpoints import MessagingInteractionsEndpoints
-from ..messaging_interactions.conversation_history_record import ConversationHistoryRecord
+from ..messaging_interactions.conversations import Conversations
 from ...util.login_service import (UserLogin, OAuthLogin)
 from typing import (List, Optional, Union)
 
@@ -42,7 +42,7 @@ class MessagingInteractions(MessagingInteractionsEndpoints):
         super().__init__(auth=auth)
 
     def conversations(self, body: dict, max_workers: int = 10,
-                      debug: bool = False) -> Union[List, List[ConversationHistoryRecord]]:
+                      debug: bool = False, raw_data: bool = False) -> Union[Optional[Conversations], List, List[dict]]:
 
         """
         Documentation:
@@ -54,6 +54,7 @@ class MessagingInteractions(MessagingInteractionsEndpoints):
         :param body: REQUIRED Enter body parameters that are the same as the API documentation.
         :param max_workers: Number of workers for requests.
         :param debug: Prints data collection process.
+        :param raw_data: Returns raw data
         :return:
         """
 
@@ -63,11 +64,12 @@ class MessagingInteractions(MessagingInteractionsEndpoints):
         count = initial_payload['_metadata']['count']
 
         if count == 0:
-            return []
+            if raw_data:
+                return []
+            else:
+                return None
 
-        conversation_history_records = [
-            ConversationHistoryRecord(record) for record in initial_payload['conversationHistoryRecords']
-        ]
+        conversation_history_records = [record for record in initial_payload['conversationHistoryRecords']]
 
         # Multi-threading to handle multiple requests at a time.
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -81,10 +83,16 @@ class MessagingInteractions(MessagingInteractionsEndpoints):
                     print('Record Count: {}, Offset: {} finished.'.format(count, future_requests[future]))
                 # Add data to results.
                 records = future.result()['conversationHistoryRecords']
-                conversation_history_records.extend([ConversationHistoryRecord(record) for record in records])
-        return conversation_history_records
+                conversation_history_records.extend([record for record in records])
 
-    def get_conversation_by_conversation_id(self, conversation_id: str) -> ConversationHistoryRecord:
+        if raw_data:
+            return conversation_history_records
+        else:
+            conversations = Conversations()
+            conversations.append_records(records=conversation_history_records)
+            return conversations
+
+    def get_conversation_by_conversation_id(self, conversation_id: str) -> Conversations:
         """
         Documentation:
         https://developers.liveperson.com/data_api-messaging-interactions-get-conversation-by-conversation-id.html
@@ -97,10 +105,13 @@ class MessagingInteractions(MessagingInteractionsEndpoints):
 
         payload = self.get_conversation_by_conversation_id_endpoint(conversation_id=conversation_id)
 
-        return ConversationHistoryRecord(payload['conversationHistoryRecords'][0])
+        conversations = Conversations()
 
-    def get_conversations_by_consumer_id(self, consumer_id: str, status: Optional[List[str]] = None
-                                         ) -> ConversationHistoryRecord:
+        conversations.append_records(records=payload['conversationHistoryRecords'])
+
+        return conversations
+
+    def get_conversations_by_consumer_id(self, consumer_id: str, status: Optional[List[str]] = None) -> Conversations:
         """
         Documentation:
         https://developers.liveperson.com/data_api-messaging-interactions-get-conversations-by-consumer-id.html
@@ -114,4 +125,8 @@ class MessagingInteractions(MessagingInteractionsEndpoints):
 
         payload = self.get_conversations_by_consumer_id_endpoint(consumer_id=consumer_id, status=status)
 
-        return ConversationHistoryRecord(payload['conversationHistoryRecords'][0])
+        conversations = Conversations()
+
+        conversations.append_records(records=payload['conversationHistoryRecords'])
+
+        return conversations
