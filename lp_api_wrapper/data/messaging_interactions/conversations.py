@@ -108,7 +108,7 @@ class Conversations:
         self.campaign: List[Campaign] = []
         self.message_record: List[MessageRecord] = []
         self.agent_participant: List[AgentParticipant] = []
-        self.agent_participants_active: List[AgentParticipant] = []
+        self.agent_participant_active: List[AgentParticipant] = []
         self.consumer_participant: List[ConsumerParticipant] = []
         self.transfer: List[Transfer] = []
         self.interaction: List[Interaction] = []
@@ -133,7 +133,7 @@ class Conversations:
                 elif event == 'agentParticipants':
                     self.agent_participant.extend(self._set_agent_participants(data=data, conversation_id=cid))
                 elif event == 'agentParticipantsActive':
-                    self.agent_participants_active.extend(self._set_agent_participants(data=data, conversation_id=cid))
+                    self.agent_participant_active.extend(self._set_agent_participants(data=data, conversation_id=cid))
                 elif event == 'consumerParticipants':
                     self.consumer_participant.extend(self._set_consumer_participants(data=data, conversation_id=cid))
                 elif event == 'transfers':
