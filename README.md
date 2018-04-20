@@ -71,21 +71,21 @@ mi_conn = MessagingInteractions(auth=auth)
 Reference:
 https://developers.liveperson.com/data-messaging-interactions-conversations.html
 
-Note: Will return 1 offset of data.
+Note: Will return all offsets of data as a Conversations data object.
 
 Arguments:
 
-* body: dict Note: Check reference for details.
-* offset: int (OPTIONAL) Defaults to 0
-* limit: int (OPTIONAL) Defaults to 100
-* sort: str (OPTIONAL)
+* body: dict (Note: Check reference for details.)
+* max_workers: Optional[int] (Max number of API requests at a time. Default:10)
+* debug: Optional[bool] (Prints status of API requests.  Default: False)
+* raw_data: Optional[bool] (Returns JSON data as a list of dictionaries.  Default: False)
 
 ```python
 body = {'start': {'from': 1491004800000, 'to': 1491091199000}}
 data = mi_conn.conversations(body)
 ```
 
-#### 2. All Conversations
+#### 2. All Conversations (Deprecated)
 Reference:
 https://developers.liveperson.com/data-messaging-interactions-conversations.html
 
@@ -94,10 +94,10 @@ Note: Will return all offsets of data as a list of 'conversationHistoryRecords'
 Arguments:
 
 * body: dict Note: Check reference for details.
-* offset: int (OPTIONAL) Defaults to 0
-* limit: int (OPTIONAL) Defaults to 100
-* sort: str (OPTIONAL)
-* debug: bool (OPTIONAL) Defaults to False ~ Prints offset status for data requests
+* offset: Optional[int] Defaults to 0
+* limit: Optional[int] Defaults to 100
+* sort: Optional[str] Defaults to None
+* debug: Optional[bool]  Defaults to False ~ Prints offset status for data requests
 * max_concurrent_requests: int (OPTIONAL) Defaults to 5.  Max: 25
 
 ```python
