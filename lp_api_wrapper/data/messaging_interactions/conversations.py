@@ -90,21 +90,21 @@ Summary = namedtuple(
 CustomerInfo = namedtuple(
     typename='CustomerInfo',
     field_names=['conversation_id', 'account_name', 'balance', 'company_branch', 'company_size', 'customer_id',
-                 'customer_status', 'customer_type', 'event_sde_type', 'event_server_time_stamp', 'imei',
-                 'last_payment_day', 'last_payment_month', 'last_payment_year', 'login_status', 'registration_day',
-                 'registration_month', 'registration_year', 'role', 'server_time_stamp', 'social_id', 'store_number',
+                 'customer_info_server_time_stamp', 'customer_status', 'customer_type', 'imei', 'last_payment_day',
+                 'last_payment_month', 'last_payment_year', 'login_status', 'registration_day', 'registration_month',
+                 'registration_year', 'role', 'sde_server_time_stamp', 'sde_type', 'social_id', 'store_number',
                  'store_zip_code', 'user_name']
 )
 
 PersonalInfo = namedtuple(
     typename='PersonalInfo',
-    field_names=['conversation_id', 'company', 'customer_age', 'email', 'event_sde_type', 'event_server_time_stamp',
-                 'gender', 'language', 'name', 'phone', 'server_time_stamp', 'surname']
+    field_names=['conversation_id', 'company', 'customer_age', 'email', 'gender', 'language', 'name',
+                 'personal_info_server_time_stamp', 'phone', 'sde_server_time_stamp', 'sde_type', 'surname']
 )
 
 
 class Conversations:
-    def __init__(self):
+    def __init__(self) -> None:
         self.info: List[Info] = []
         self.campaign: List[Campaign] = []
         self.message_record: List[MessageRecord] = []
@@ -121,7 +121,7 @@ class Conversations:
         self.customer_info: List[CustomerInfo] = []
         self.personal_info: List[PersonalInfo] = []
 
-    def append_records(self, records: List[dict]):
+    def append_records(self, records: List[dict]) -> None:
         for record in records:
             cid = record['info']['conversationId']
             for event, data in record.items():
@@ -179,11 +179,15 @@ class Conversations:
                     )
                 elif event == 'sdes':
                     if 'events' in data:
-                        customer_info, personal_info = self._set_sdes(sde_data=data['events'], conversation_id=cid)
+                        customer_info, personal_info = self._filter_sdes(sde_data=data['events'])
                         if customer_info:
-                            self.customer_info.extend(customer_info)
+                            self.customer_info.extend(
+                                self._set_customer_info(customer_info_data=customer_info, conversation_id=cid)
+                            )
                         if personal_info:
-                            self.personal_info.extend(personal_info)
+                            self.personal_info.extend(
+                                self._set_personal_info(personal_info_data=personal_info, conversation_id=cid)
+                            )
 
     @staticmethod
     def _set_info(info_data: dict, conversation_id: str) -> Info:
@@ -218,64 +222,64 @@ class Conversations:
         start_time_l = None
         status = None
 
-        for name, value in info_data.items():
-            if name == 'agentDeleted':
+        for key, value in info_data.items():
+            if key == 'agentDeleted':
                 agent_deleted = value
-            elif name == 'alertedMCS':
+            elif key == 'alertedMCS':
                 alerted_mcs = value
-            elif name == 'brandId':
+            elif key == 'brandId':
                 brand_id = value
-            elif name == 'browser':
+            elif key == 'browser':
                 browser = value
-            elif name == 'closeReason':
+            elif key == 'closeReason':
                 close_reason = value
-            elif name == 'closeReasonDescription':
+            elif key == 'closeReasonDescription':
                 close_reason_description = value
-            elif name == 'csat':
+            elif key == 'csat':
                 csat = value
-            elif name == 'csatRate':
+            elif key == 'csatRate':
                 csat_rate = value
-            elif name == 'device':
+            elif key == 'device':
                 device = value
-            elif name == 'duration':
+            elif key == 'duration':
                 duration = value
-            elif name == 'endTime':
+            elif key == 'endTime':
                 end_time = value
-            elif name == 'endTimeL':
+            elif key == 'endTimeL':
                 end_time_l = value
-            elif name == 'firstConversation':
+            elif key == 'firstConversation':
                 first_conversation = value
-            elif name == 'isPartial':
+            elif key == 'isPartial':
                 is_partial = value
-            elif name == 'latestAgentFullName':
+            elif key == 'latestAgentFullName':
                 latest_agent_full_name = value
-            elif name == 'latestAgentGroupId':
+            elif key == 'latestAgentGroupId':
                 latest_agent_group_id = value
-            elif name == 'latestAgentGroupName':
+            elif key == 'latestAgentGroupName':
                 latest_agent_group_name = value
-            elif name == 'latestAgentId':
+            elif key == 'latestAgentId':
                 latest_agent_id = value
-            elif name == 'latestAgentLoginName':
+            elif key == 'latestAgentLoginName':
                 latest_agent_login_name = value
-            elif name == 'latestAgentNickname':
+            elif key == 'latestAgentNickname':
                 latest_agent_nickname = value
-            elif name == 'latestQueueState':
+            elif key == 'latestQueueState':
                 latest_queue_state = value
-            elif name == 'latestSkillId':
+            elif key == 'latestSkillId':
                 latest_skill_id = value
-            elif name == 'latestSkillName':
+            elif key == 'latestSkillName':
                 latest_skill_name = value
-            elif name == 'mcs':
+            elif key == 'mcs':
                 mcs = value
-            elif name == 'operatingSystem':
+            elif key == 'operatingSystem':
                 operating_system = value
-            elif name == 'source':
+            elif key == 'source':
                 source = value
-            elif name == 'startTime':
+            elif key == 'startTime':
                 start_time = value
-            elif name == 'startTimeL':
+            elif key == 'startTimeL':
                 start_time_l = value
-            elif name == 'status':
+            elif key == 'status':
                 status = value
 
         return Info(conversation_id=conversation_id, agent_deleted=agent_deleted, alerted_mcs=alerted_mcs,
@@ -316,50 +320,50 @@ class Conversations:
         visitor_profile_id = None
         visitor_profile_name = None
 
-        for name, value in campaign_data.items():
-            if name == 'behaviorSystemDefault':
+        for key, value in campaign_data.items():
+            if key == 'behaviorSystemDefault':
                 behavior_system_default = value
-            elif name == 'campaignEngagementId':
+            elif key == 'campaignEngagementId':
                 campaign_engagement_id = value
-            elif name == 'campaignEngagementName':
+            elif key == 'campaignEngagementName':
                 campaign_engagement_name = value
-            elif name == 'campaignId':
+            elif key == 'campaignId':
                 campaign_id = value
-            elif name == 'campaignName':
+            elif key == 'campaignName':
                 campaign_name = value
-            elif name == 'engagementAgentNote':
+            elif key == 'engagementAgentNote':
                 engagement_agent_note = value
-            elif name == 'engagementApplicationId':
+            elif key == 'engagementApplicationId':
                 engagement_application_id = value
-            elif name == 'engagementApplicationName':
+            elif key == 'engagementApplicationName':
                 engagement_application_name = value
-            elif name == 'engagementApplicationTypeId':
+            elif key == 'engagementApplicationTypeId':
                 engagement_application_type_id = value
-            elif name == 'engagementApplicationTypeName':
+            elif key == 'engagementApplicationTypeName':
                 engagement_application_type_name = value
-            elif name == 'engagementSource':
+            elif key == 'engagementSource':
                 engagement_source = value
-            elif name == 'goalId':
+            elif key == 'goalId':
                 goal_id = value
-            elif name == 'goalName':
+            elif key == 'goalName':
                 goal_name = value
-            elif name == 'lobId':
+            elif key == 'lobId':
                 lob_id = value
-            elif name == 'lobName':
+            elif key == 'lobName':
                 lob_name = value
-            elif name == 'LocationId':
+            elif key == 'LocationId':
                 location_id = value
-            elif name == 'LocationName':
+            elif key == 'LocationName':
                 location_name = value
-            elif name == 'profileSystemDefault':
+            elif key == 'profileSystemDefault':
                 profile_system_default = value
-            elif name == 'visitorBehaviorId':
+            elif key == 'visitorBehaviorId':
                 visitor_behavior_id = value
-            elif name == 'visitorBehaviorName':
+            elif key == 'visitorBehaviorName':
                 visitor_behavior_name = value
-            elif name == 'visitorProfileId':
+            elif key == 'visitorProfileId':
                 visitor_profile_id = value
-            elif name == 'visitorProfileName':
+            elif key == 'visitorProfileName':
                 visitor_profile_name = value
 
         return Campaign(conversation_id=conversation_id, behavior_system_default=behavior_system_default,
@@ -380,7 +384,7 @@ class Conversations:
     def _set_message_records(message_record_data: dict, conversation_id: str) -> List[MessageRecord]:
         # TODO: Parse context data (contains context data, structured metadata, bot response, intent, and action reason)
 
-        def parse_message_record(item: dict, cid: str):
+        def parse_message_record(item: dict, cid: str) -> MessageRecord:
             context_data = None
             device = None
             dialog_id = None
@@ -394,31 +398,31 @@ class Conversations:
             time_l = None
             type = None
 
-            for name, value in item.items():
-                if name == 'contextData':
+            for key, value in item.items():
+                if key == 'contextData':
                     context_data = value
-                elif name == 'device':
+                elif key == 'device':
                     device = value
-                elif name == 'dialogId':
+                elif key == 'dialogId':
                     dialog_id = value
-                elif name == 'messageData':
+                elif key == 'messageData':
                     if 'msg' in value and 'text' in value['msg']:
                         message_data = value['msg']['text']
-                elif name == 'messageId':
+                elif key == 'messageId':
                     message_id = value
-                elif name == 'participantId':
+                elif key == 'participantId':
                     participant_id = value
-                elif name == 'sentBy':
+                elif key == 'sentBy':
                     sent_by = value
-                elif name == 'seq':
+                elif key == 'seq':
                     seq = value
-                elif name == 'source':
+                elif key == 'source':
                     source = value
-                elif name == 'time':
+                elif key == 'time':
                     time = value
-                elif name == 'timeL':
+                elif key == 'timeL':
                     time_l = value
-                elif name == 'type':
+                elif key == 'type':
                     type = value
 
             return MessageRecord(conversation_id=cid, context_data=context_data, device=device, dialog_id=dialog_id,
@@ -430,7 +434,7 @@ class Conversations:
     @staticmethod
     def _set_agent_participants(agent_participant_data: dict, conversation_id: str) -> List[AgentParticipant]:
 
-        def parse_agent_participant(item: dict, cid: str):
+        def parse_agent_participant(item: dict, cid: str) -> AgentParticipant:
 
             agent_deleted = None
             agent_full_name = None
@@ -447,34 +451,34 @@ class Conversations:
             user_type = None
             user_type_name = None
 
-            for name, value in item.items():
-                if name == 'agentDeleted':
+            for key, value in item.items():
+                if key == 'agentDeleted':
                     agent_deleted = value
-                elif name == 'agentFullName':
+                elif key == 'agentFullName':
                     agent_full_name = value
-                elif name == 'agentGroupId':
+                elif key == 'agentGroupId':
                     agent_group_id = value
-                elif name == 'agentGroupName':
+                elif key == 'agentGroupName':
                     agent_group_name = value
-                elif name == 'agentId':
+                elif key == 'agentId':
                     agent_id = value
-                elif name == 'agentLoginName':
+                elif key == 'agentLoginName':
                     agent_login_name = value
-                elif name == 'agentNickname':
+                elif key == 'agentNickname':
                     agent_nickname = value
-                elif name == 'agentPid':
+                elif key == 'agentPid':
                     agent_pid = value
-                elif name == 'permission':
+                elif key == 'permission':
                     permission = value
-                elif name == 'role':
+                elif key == 'role':
                     role = value
-                elif name == 'time':
+                elif key == 'time':
                     time = value
-                elif name == 'timeL':
+                elif key == 'timeL':
                     time_l = value
-                elif name == 'userType':
+                elif key == 'userType':
                     user_type = value
-                elif name == 'userTypeName':
+                elif key == 'userTypeName':
                     user_type_name = value
 
             return AgentParticipant(conversation_id=cid, agent_deleted=agent_deleted, agent_full_name=agent_full_name,
@@ -488,7 +492,7 @@ class Conversations:
     @staticmethod
     def _set_consumer_participants(consumer_participant_data: dict, conversation_id: str) -> List[ConsumerParticipant]:
 
-        def parse_consumer_participant(item: dict, cid: str):
+        def parse_consumer_participant(item: dict, cid: str) -> ConsumerParticipant:
             avatar_url = None
             consumer_name = None
             email = None
@@ -500,26 +504,26 @@ class Conversations:
             time_l = None
             token = None
 
-            for name, value in item.items():
-                if name == 'avatarURL':
+            for key, value in item.items():
+                if key == 'avatarURL':
                     avatar_url = value
-                if name == 'consumerName':
+                elif key == 'consumerName':
                     consumer_name = value
-                elif name == 'email':
+                elif key == 'email':
                     email = value
-                elif name == 'firstName':
+                elif key == 'firstName':
                     first_name = value
-                elif name == 'lastName':
+                elif key == 'lastName':
                     last_name = value
-                elif name == 'participantId':
+                elif key == 'participantId':
                     participant_id = value
-                elif name == 'phone':
+                elif key == 'phone':
                     phone = value
-                elif name == 'time':
+                elif key == 'time':
                     time = value
-                elif name == 'timeL':
+                elif key == 'timeL':
                     time_l = value
-                elif name == 'token':
+                elif key == 'token':
                     token = value
 
             return ConsumerParticipant(conversation_id=cid, avatar_url=avatar_url, consumer_name=consumer_name,
@@ -532,7 +536,7 @@ class Conversations:
     @staticmethod
     def _set_transfers(transfer_data: dict, conversation_id: str) -> List[Transfer]:
 
-        def parse_transfer(item: dict, cid: str):
+        def parse_transfer(item: dict, cid: str) -> Transfer:
             assigned_agent_full_name = None
             assigned_agent_id = None
             assigned_agent_login_name = None
@@ -551,40 +555,40 @@ class Conversations:
             time = None
             time_l = None
 
-            for name, value in item.items():
-                if name == 'assignedAgentFullName':
+            for key, value in item.items():
+                if key == 'assignedAgentFullName':
                     assigned_agent_full_name = value
-                elif name == 'assignedAgentId':
+                elif key == 'assignedAgentId':
                     assigned_agent_id = value
-                elif name == 'assignedAgentLoginName':
+                elif key == 'assignedAgentLoginName':
                     assigned_agent_login_name = value
-                elif name == 'assignedAgentNickname':
+                elif key == 'assignedAgentNickname':
                     assigned_agent_nickname = value
-                elif name == 'by':
+                elif key == 'by':
                     by = value
-                elif name == 'contextData':
+                elif key == 'contextData':
                     context_data = value
-                elif name == 'reason':
+                elif key == 'reason':
                     reason = value
-                elif name == 'sourceAgentFullName':
+                elif key == 'sourceAgentFullName':
                     source_agent_full_name = value
-                elif name == 'sourceAgentId':
+                elif key == 'sourceAgentId':
                     source_agent_id = value
-                elif name == 'sourceAgentLoginName':
+                elif key == 'sourceAgentLoginName':
                     source_agent_login_name = value
-                elif name == 'sourceAgentNickname':
+                elif key == 'sourceAgentNickname':
                     source_agent_nickname = value
-                elif name == 'sourceSkillId':
+                elif key == 'sourceSkillId':
                     source_skill_id = value
-                elif name == 'sourceSkillName':
+                elif key == 'sourceSkillName':
                     source_skill_name = value
-                elif name == 'targetSkillId':
+                elif key == 'targetSkillId':
                     target_skill_id = value
-                elif name == 'targetSkillName':
+                elif key == 'targetSkillName':
                     target_skill_name = value
-                elif name == 'time':
+                elif key == 'time':
                     time = value
-                elif name == 'timeL':
+                elif key == 'timeL':
                     time_l = value
 
             return Transfer(conversation_id=cid, assigned_agent_full_name=assigned_agent_full_name,
@@ -601,7 +605,7 @@ class Conversations:
     @staticmethod
     def _set_interactions(interaction_data: dict, conversation_id: str) -> List[Interaction]:
 
-        def parse_interaction(item: dict, cid: str):
+        def parse_interaction(item: dict, cid: str) -> Interaction:
 
             assigned_agent_id = None
             assigned_agent_login_name = None
@@ -611,20 +615,20 @@ class Conversations:
             interaction_time_l = None
             interactive_sequence = None
 
-            for name, value in item.items():
-                if name == 'assignedAgentId':
+            for key, value in item.items():
+                if key == 'assignedAgentId':
                     assigned_agent_id = value
-                elif name in ['assignedAgentLoginName', 'agentLoginName']:
+                elif key in ['assignedAgentLoginName', 'agentLoginName']:
                     assigned_agent_login_name = value
-                elif name in ['assignedAgentNickname', 'agentNickname']:
+                elif key in ['assignedAgentNickname', 'agentNickname']:
                     assigned_agent_nickname = value
-                elif name in ['assignedAgentFullName', 'agentFullName']:
+                elif key in ['assignedAgentFullName', 'agentFullName']:
                     assigned_agent_full_name = value
-                elif name == 'interactionTime':
+                elif key == 'interactionTime':
                     interaction_time = value
-                elif name == 'interactionTimeL':
+                elif key == 'interactionTimeL':
                     interaction_time_l = value
-                elif name == 'interactiveSequence':
+                elif key == 'interactiveSequence':
                     interactive_sequence = value
 
             return Interaction(conversation_id=cid, assigned_agent_id=assigned_agent_id,
@@ -638,23 +642,23 @@ class Conversations:
     @staticmethod
     def _set_message_scores(message_score_data: dict, conversation_id: str) -> List[MessageScore]:
 
-        def parse_message_score(item: dict, cid: str):
+        def parse_message_score(item: dict, cid: str) -> MessageScore:
             mcs = None
             message_id = None
             message_raw_score = None
             time = None
             time_l = None
 
-            for name, value in item.items():
-                if name == 'mcs':
+            for key, value in item.items():
+                if key == 'mcs':
                     mcs = value
-                elif name == 'messageId':
+                elif key == 'messageId':
                     message_id = value
-                elif name == 'messageRawScore':
+                elif key == 'messageRawScore':
                     message_raw_score = value
-                elif name == 'time':
+                elif key == 'time':
                     time = value
-                elif name == 'timeL':
+                elif key == 'timeL':
                     time_l = value
 
             return MessageScore(conversation_id=cid, mcs=mcs, message_id=message_id,
@@ -665,7 +669,7 @@ class Conversations:
     @staticmethod
     def _set_message_statuses(message_status_data: dict, conversation_id: str) -> List[MessageStatus]:
 
-        def parse_message_status(item: dict, cid: str):
+        def parse_message_status(item: dict, cid: str) -> MessageStatus:
 
             message_delivery_status = None
             message_id = None
@@ -675,20 +679,20 @@ class Conversations:
             time = None
             time_l = None
 
-            for name, value in item.items():
-                if name == 'messageDeliveryStatus':
+            for key, value in item.items():
+                if key == 'messageDeliveryStatus':
                     message_delivery_status = value
-                elif name == 'messageId':
+                elif key == 'messageId':
                     message_id = value
-                elif name == 'participantId':
+                elif key == 'participantId':
                     participant_id = value
-                elif name == 'participantType':
+                elif key == 'participantType':
                     participant_type = value
-                elif name == 'seq':
+                elif key == 'seq':
                     seq = value
-                elif name == 'time':
+                elif key == 'time':
                     time = value
-                elif name == 'timeL':
+                elif key == 'timeL':
                     time_l = value
 
             return MessageStatus(conversation_id=cid, message_delivery_status=message_delivery_status,
@@ -700,22 +704,34 @@ class Conversations:
     @staticmethod
     def _set_surveys(survey_data: dict, conversation_id: str) -> List[Survey]:
 
-        def parse_survey(survey_event, cid):
+        def parse_survey(survey_event, cid) -> Survey:
+
+            survey_type = None
+            survey_status = None
+
+            if 'surveyType' in survey_event and survey_event['surveyType']:
+                survey_type = survey_event['surveyType']
+
+            if 'surveyStatus' in survey_event and survey_event['surveyStatus']:
+                survey_status = survey_event['surveyStatus']
+
             surveys = []
 
-            survey_type = survey_event['surveyType'] if 'surveyType' in survey_event else None
-            survey_status = survey_event['surveyStatus'] if 'surveyStatus' in survey_event else None
-
-            if 'surveyData' in survey_event:
+            if 'surveyData' in survey_event and survey_event['surveyData']:
                 for sd in survey_event['surveyData']:
+
+                    survey_answer = None
+                    survey_question = None
+
+                    if 'answer' in sd and sd['answer']:
+                        survey_answer = sd['answer']
+
+                    if 'question' in sd and sd['question']:
+                        survey_question = sd['question']
+
                     surveys.append(
-                        Survey(
-                            conversation_id=cid,
-                            survey_answer=sd['answer'] if 'answer' in sd else None,
-                            survey_question=sd['question'] if 'question' in sd else None,
-                            survey_type=survey_type,
-                            survey_status=survey_status
-                        )
+                        Survey(conversation_id=cid, survey_answer=survey_answer, survey_question=survey_question,
+                               survey_type=survey_type, survey_status=survey_status)
                     )
             else:
                 surveys.append(
@@ -734,7 +750,7 @@ class Conversations:
     @staticmethod
     def _set_cobrowse_sessions(cobrowse_session_data: dict, conversation_id: str) -> List[CoBrowseSession]:
 
-        def parse_cobrowse_session(item: dict, cid: str):
+        def parse_cobrowse_session(item: dict, cid: str) -> CoBrowseSession:
 
             agent_id = None
             capabilities = None
@@ -750,32 +766,32 @@ class Conversations:
             start_time_l = None
             type = None
 
-            for name, value in item.items():
-                if name == 'agentId':
+            for key, value in item.items():
+                if key == 'agentId':
                     agent_id = value
-                elif name == 'capabilities':
+                elif key == 'capabilities':
                     capabilities = value
-                elif name == 'duration':
+                elif key == 'duration':
                     duration = value
-                elif name == 'endReason':
+                elif key == 'endReason':
                     end_reason = value
-                elif name == 'endTime':
+                elif key == 'endTime':
                     end_time = value
-                elif name == 'endTimeL':
+                elif key == 'endTimeL':
                     end_time_l = value
-                elif name == 'interactiveTime':
+                elif key == 'interactiveTime':
                     interactive_time = value
-                elif name == 'interactiveTimeL':
+                elif key == 'interactiveTimeL':
                     interactive_time_l = value
-                elif name == 'isInteractive':
+                elif key == 'isInteractive':
                     is_interactive = value
-                elif name == 'sessionId':
+                elif key == 'sessionId':
                     session_id = value
-                elif name == 'startTime':
+                elif key == 'startTime':
                     start_time = value
-                elif name == 'startTimeL':
+                elif key == 'startTimeL':
                     start_time_l = value
-                elif name == 'type':
+                elif key == 'type':
                     type = value
 
             return CoBrowseSession(conversation_id=cid, agent_id=agent_id, capabilities=capabilities,
@@ -792,130 +808,205 @@ class Conversations:
         last_updated_time = None
         text = None
 
-        for name, value in summary_data.items():
-            if name == 'lastUpdatedTime':
+        for key, value in summary_data.items():
+            if key == 'lastUpdatedTime':
                 last_updated_time = value
-            elif name == 'text':
+            elif key == 'text':
                 text = value
 
         return Summary(conversation_id=conversation_id, text=text, last_updated_time=last_updated_time)
 
     @staticmethod
-    def _set_sdes(sde_data: dict, conversation_id: str) -> (List[CustomerInfo], List[PersonalInfo]):
-
-        def filter_customer_info(event_data, cid):
-            c_info = event_data['customerInfo']['customerInfo']
-
-            # Bread down last payment date
-            if 'lastPaymentDate' in c_info:
-                lpd = c_info['lastPaymentDate']
-                last_payment_year = lpd['year'] if 'year' in lpd else None
-                last_payment_month = lpd['month'] if 'month' in lpd else None
-                last_payment_day = lpd['day'] if 'day' in lpd else None
-            else:
-                last_payment_year = None
-                last_payment_month = None
-                last_payment_day = None
-
-            # Break down registration date
-            if 'registrationDate' in c_info:
-                rd = c_info['registrationDate']
-                registration_year = rd['year'] if 'year' in rd else None
-                registration_month = rd['month'] if 'month' in rd else None
-                registration_day = rd['day'] if 'day' in rd else None
-            else:
-                registration_year = None
-                registration_month = None
-                registration_day = None
-
-            # Get time stamp from inside customer info
-            if 'serverTimeStamp' in event['customerInfo']:
-                server_time_stamp = event['customerInfo']['serverTimeStamp']
-            else:
-                server_time_stamp = None
-
-            return CustomerInfo(
-                conversation_id=cid,
-                account_name=c_info['accountName'] if 'accountName' in c_info else None,
-                balance=c_info['balance'] if 'balance' in c_info else None,
-                company_branch=c_info['companyBranch'] if 'companyBranch' in c_info else None,
-                company_size=c_info['companySize'] if 'companySize' in c_info else None,
-                customer_id=c_info['customerId'] if 'customerId' in c_info else None,
-                customer_status=c_info['customerStatus'] if 'customerStatus' in c_info else None,
-                customer_type=c_info['customerType'] if 'customerType' in c_info else None,
-                event_sde_type=event_data['sdeType'],
-                event_server_time_stamp=event_data['serverTimeStamp'],
-                imei=c_info['imei'] if 'imei' in c_info else None,
-                last_payment_day=last_payment_day,
-                last_payment_month=last_payment_month,
-                last_payment_year=last_payment_year,
-                login_status=c_info['loginStatus'] if 'loginStatus' in c_info else None,
-                registration_day=registration_day,
-                registration_month=registration_month,
-                registration_year=registration_year,
-                role=c_info['role'] if 'role' in c_info else None,
-                server_time_stamp=server_time_stamp,
-                social_id=c_info['socialId'] if 'socialId' in c_info else None,
-                store_number=c_info['storeNumber'] if 'storeNumber' in c_info else None,
-                store_zip_code=c_info['storeZipCode'] if 'storeZipCode' in c_info else None,
-                user_name=c_info['userName'] if 'userName' in c_info else None
-            )
-
-        def filter_personal_info(event_data, cid):
-            p_info = event_data['personalInfo']['personalInfo']
-
-            company = p_info['company'] if 'company' in p_info else None
-            customer_age = p_info['customerAge'] if 'customerAge' in p_info else None
-            email = None
-            event_sde_type = event_data['sdeType']
-            event_server_time_stamp = event_data['serverTimeStamp']
-            gender = p_info['gender'] if 'gender' in p_info else None
-            language = p_info['language'] if 'language' in p_info else None
-            name = p_info['name'] if 'name' in p_info else None
-            phone = None
-            surname = p_info['surname'] if 'surname' in p_info else None,
-
-            # Get time stamp from inside personal info
-            if 'serverTimeStamp' in event_data['personalInfo']:
-                server_time_stamp = event_data['personalInfo']['serverTimeStamp']
-            else:
-                server_time_stamp = None
-
-            personal_info_rows = []
-            if 'contacts' in p_info:
-                for contact in p_info['contacts']:
-
-                    email = phone = None
-
-                    if 'personalContact' in contact:
-                        if 'email' in contact['personalContact']:
-                            email = contact['personalContact']['email']
-                        if 'phone' in contact['personalContact']:
-                            phone = contact['personalContact']['phone']
-
-                    personal_info_rows.append(
-                        PersonalInfo(conversation_id=cid, company=company, customer_age=customer_age, email=email,
-                                     event_sde_type=event_sde_type, event_server_time_stamp=event_server_time_stamp,
-                                     gender=gender, language=language, name=name, phone=phone,
-                                     server_time_stamp=server_time_stamp, surname=surname)
-                    )
-            else:
-                personal_info_rows.append(
-                    PersonalInfo(conversation_id=cid, company=company, customer_age=customer_age, email=email,
-                                 event_sde_type=event_sde_type, event_server_time_stamp=event_server_time_stamp,
-                                 gender=gender, language=language, name=name, phone=phone,
-                                 server_time_stamp=server_time_stamp, surname=surname)
-                )
-
-            return personal_info_rows
+    def _filter_sdes(sde_data: dict) -> (List[dict], List[dict]):
 
         customer_info_events = []
         personal_info_events = []
 
         for event in sde_data:
-            if 'customerInfo' in event:
-                customer_info_events.append(filter_customer_info(event_data=event, cid=conversation_id))
-            elif 'personalInfo' in event:
-                personal_info_events.extend(filter_personal_info(event_data=event, cid=conversation_id))
+            if 'customerInfo' in event and event['customerInfo']:
+                customer_info_events.append(event)
+            elif 'personalInfo' in event and event['personalInfo']:
+                personal_info_events.append(event)
 
         return customer_info_events, personal_info_events
+
+    @staticmethod
+    def _set_customer_info(customer_info_data: List[dict], conversation_id: str) -> List[CustomerInfo]:
+
+        def parse_customer_info(ci_item: dict, cid: str) -> CustomerInfo:
+
+            account_name = None
+            balance = None
+            company_branch = None
+            company_size = None
+            customer_id = None
+            customer_info_server_time_stamp = None
+            customer_status = None
+            customer_type = None
+            imei = None
+            last_payment_day = None
+            last_payment_month = None
+            last_payment_year = None
+            login_status = None
+            registration_day = None
+            registration_month = None
+            registration_year = None
+            role = None
+            sde_type = None
+            sde_server_time_stamp = None
+            social_id = None
+            store_number = None
+            store_zip_code = None
+            user_name = None
+
+            c_info = ci_item['customerInfo']['customerInfo']
+
+            for key, value in c_info.items():
+                if key == 'accountName':
+                    account_name = value
+                elif key == 'balance':
+                    balance = value
+                elif key == 'companyBranch':
+                    company_branch = value
+                elif key == 'companySize':
+                    company_size = value
+                elif key == 'customerId':
+                    customer_id = value
+                elif key == 'customerStatus':
+                    customer_status = value
+                elif key == 'customerType':
+                    customer_type = value
+                elif key == 'imei':
+                    imei = value
+                elif key == 'lastPaymentDate':
+                    if 'year' in value and value['year']:
+                        last_payment_year = value['year']
+                    if 'month' in value and value['month']:
+                        last_payment_month = value['month']
+                    if 'day' in value and value['day']:
+                        last_payment_day = value['day']
+                elif key == 'loginStatus':
+                    login_status = value
+                elif key == 'registrationDate':
+                    if 'year' in value and value['year']:
+                        registration_year = value['year']
+                    if 'month' in value and value['month']:
+                        registration_month = value['month']
+                    if 'day' in value and value['day']:
+                        registration_day = value['day']
+                elif key == 'role':
+                    role = value
+                elif key == 'socialId':
+                    social_id = value
+                elif key == 'storeNumber':
+                    store_number = value
+                elif key == 'storeZipCode':
+                    store_zip_code = value
+                elif key == 'userName':
+                    user_name = value
+
+            # SDE Type
+            if 'sdeType' in ci_item and ci_item['sdeType']:
+                sde_type = ci_item['sdeType']
+
+            # SDE Server Time Stamp
+            if 'serverTimeStamp' in ci_item and ci_item['serverTimeStamp']:
+                sde_server_time_stamp = ci_item['serverTimeStamp']
+
+            # Get time stamp from inside customer info
+            if 'serverTimeStamp' in ci_item['customerInfo'] and ci_item['customerInfo']['serverTimeStamp']:
+                customer_info_server_time_stamp = ci_item['customerInfo']['serverTimeStamp']
+
+            return CustomerInfo(conversation_id=cid, account_name=account_name, balance=balance,
+                                company_branch=company_branch, company_size=company_size, customer_id=customer_id,
+                                customer_info_server_time_stamp=customer_info_server_time_stamp,
+                                customer_status=customer_status, customer_type=customer_type, imei=imei,
+                                last_payment_day=last_payment_day, last_payment_month=last_payment_month,
+                                last_payment_year=last_payment_year, login_status=login_status,
+                                registration_day=registration_day, registration_month=registration_month,
+                                registration_year=registration_year, role=role, sde_type=sde_type,
+                                sde_server_time_stamp=sde_server_time_stamp, social_id=social_id,
+                                store_number=store_number, store_zip_code=store_zip_code, user_name=user_name)
+
+        return [parse_customer_info(ci_item=item, cid=conversation_id) for item in customer_info_data]
+
+    @staticmethod
+    def _set_personal_info(personal_info_data: List[dict], conversation_id: str) -> List[PersonalInfo]:
+
+        def parse_personal_info(pi_item: dict, cid: str) -> PersonalInfo:
+
+            company = None
+            customer_age = None
+            gender = None
+            language = None
+            name = None
+            personal_info_server_time_stamp = None
+            sde_type = None
+            sde_server_time_stamp = None
+            surname = None
+
+            p_info = pi_item['personalInfo']['personalInfo']
+
+            for key, value in p_info.items():
+                if key == 'company':
+                    company = value
+                elif key == 'customerAge':
+                    customer_age = value
+                elif key == 'gender':
+                    gender = value
+                elif key == 'language':
+                    language = value
+                elif key == 'name':
+                    name = value
+                elif key == 'surname':
+                    surname = value
+
+            # SDE Type
+            if 'sdeType' in pi_item and pi_item['sdeType']:
+                sde_type = pi_item['sdeType']
+
+            # SDE Server Time Stamp
+            if 'serverTimeStamp' in pi_item and pi_item['serverTimeStamp']:
+                sde_server_time_stamp = pi_item['serverTimeStamp']
+
+            # Get time stamp from inside customer info
+            if 'serverTimeStamp' in pi_item['personalInfo'] and pi_item['personalInfo']['serverTimeStamp']:
+                personal_info_server_time_stamp = pi_item['personalInfo']['serverTimeStamp']
+
+            personal_info_rows = []
+
+            if 'contacts' in p_info and p_info['contacts']:
+                for contact in p_info['contacts']:
+
+                    email = None
+                    phone = None
+
+                    if 'personalContact' in contact and contact['personalContact']:
+                        if 'email' in contact['personalContact'] and contact['personalContact']['email']:
+                            email = contact['personalContact']['email']
+                        if 'phone' in contact['personalContact'] and contact['personalContact']['phone']:
+                            phone = contact['personalContact']['phone']
+
+                    personal_info_rows.append(
+                        PersonalInfo(conversation_id=cid, company=company, customer_age=customer_age, email=email,
+                                     gender=gender, language=language, name=name,
+                                     personal_info_server_time_stamp=personal_info_server_time_stamp,
+                                     phone=phone, sde_server_time_stamp=sde_server_time_stamp, sde_type=sde_type,
+                                     surname=surname)
+                    )
+            else:
+                personal_info_rows.append(
+                    PersonalInfo(conversation_id=cid, company=company, customer_age=customer_age, email=None,
+                                 gender=gender, language=language, name=name,
+                                 personal_info_server_time_stamp=personal_info_server_time_stamp,
+                                 phone=None, sde_server_time_stamp=sde_server_time_stamp, sde_type=sde_type,
+                                 surname=surname)
+                )
+
+            return personal_info_rows
+
+        return [
+            personal_info
+            for item in personal_info_data
+            for personal_info in parse_personal_info(pi_item=item, cid=conversation_id)
+        ]

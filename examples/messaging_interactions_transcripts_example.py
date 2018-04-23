@@ -21,7 +21,7 @@ start_to = int(datetime.now().timestamp() * 1000)
 # Conversations from date range created above
 body = {'start': {'from': start_from, 'to': start_to}}
 
-# Get data! (Only 1 offset) Great for testing...
+# Get data!
 conversations = mi_conn.conversations(body=body)
 
 # Convert into Pandas DataFrame
