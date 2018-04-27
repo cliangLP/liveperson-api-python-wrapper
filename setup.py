@@ -12,10 +12,10 @@ setup(
     download_url='https://github.com/ajoneslp/liveperson-api-python-wrapper/archive/{}.tar.gz'.format(v),
     packages=find_packages(),
     install_requires=['requests', 'requests_oauthlib'],
+    python_requires='>=3.6',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6'
     ],
 )
