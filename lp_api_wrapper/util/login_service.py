@@ -9,24 +9,13 @@ https://developers.liveperson.com/login-getting-started.html
 import requests
 from requests_oauthlib import OAuth1
 from .domain_service import DomainService
-from typing import (Union, Optional)
+from typing import (Union, Optional, NamedTuple)
 
 
-class UserLogin:
-    def __init__(self, account_id: str, username: str, password: str) -> None:
-        self.account_id = account_id
-        self.username = username
-        self.password = password
+UserLogin = NamedTuple('UserLogin', [('account_id', str), ('username', str), ('password', str)])
 
-
-class OAuthLogin:
-    def __init__(self, account_id: str, app_key: str, app_secret: str, access_token: Optional[str] = None,
-                 access_token_secret: Optional[str] = None) -> None:
-        self.account_id = account_id
-        self.app_key = app_key
-        self.app_secret = app_secret
-        self.access_token = access_token
-        self.access_token_secret = access_token_secret
+OAuthLogin = NamedTuple('OAuthLogin', [('account_id', str), ('app_key', str), ('app_secret', str),
+                                       ('access_token', Optional[str]), ('access_token_secret', Optional[str])])
 
 
 class LoginService(DomainService):
